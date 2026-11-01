@@ -1,0 +1,457 @@
+LB 0x0600d328 sys_InitHardware CONFIRM sys_InitHardware calls full init chain for cd, sound, vdp, fs
+LB 0x0600d39e sys_InitMode3 CONFIRM sys_InitMode3 init hardware then mode var=3
+LB 0x0600d3ae sys_InitModeReset CONFIRM sys_InitModeReset init hardware then mode var=0, used by reset combo
+LB 0x0600d598 main_InitSystemSgl CONFIRM main_InitSystemSgl boot-time video/cd/fs/sound init, called from main loop
+LB 0x0600d85e save_InitOrLoadSettings CONFIRM save_InitOrLoadSettings first-run defaults else copy block
+LB 0x0600d8a8 game_StartFromSetupState CONFIRM game_StartFromSetupState picks mode by setup bytes, sets accum values
+LB 0x0600d95e game_StoreMatchSetup CONFIRM game_StoreMatchSetup stores player picks into setup struct and copies block
+LB 0x0600dbc4 mem_SetWorkPtrFromCall RENAME gfx_BeginDataBlockLoad starts chunked copy job, stores handle used by gfx_CopyDataBlockToVram
+LB 0x0600dbd8 gfx_CopyDataBlockToVram CONFIRM gfx_CopyDataBlockToVram when chunk step done DMA to VRAM and CRAM
+LB 0x0600ddc6 menu_PollInputDispatch RENAME title_RunLogoScript runs step table then tail-calls logo draw, no input polling
+LB 0x0600e198 vdp2_InitBackground CONFIRM vdp2_InitBackground clears buffer, DMA, sets layer enable
+LB 0x0600e1f6 vdp2_ResetBackground CONFIRM vdp2_ResetBackground zero scroll, mode 3, reset layer regs
+LB 0x0600e21a vdp1_SetClipRectParams UNSURE vdp1_SetClipRectParams 8-halfword struct submitted, meaning of fields unclear
+LB 0x0600eed4 opt_ResetSoundPage CONFIRM opt_ResetSoundPage resets bgm/se fields, stops cd, requests bank
+LB 0x0600f948 opt_InitScreen CONFIRM opt_InitScreen stops audio, loads gfx and palettes for option screen
+LB 0x06013694 menu_CommitCursorSelection CONFIRM menu_CommitCursorSelection copies pending to current fields
+LB 0x060136ac menu_ConfirmOrAdvanceStep CONFIRM menu_ConfirmOrAdvanceStep advance step or commit selection
+LB 0x06013704 menu_HandleStartPressed CONFIRM menu_HandleStartPressed scans pads for start, switches mode byte
+LB 0x06013bf4 menu_CheckBothStartPressed RENAME menu_CheckAnyPlayerStart returns 1 if either pad start-bit set, not both; plays two snd cmds
+LB 0x06013e5c vdp2_SetBackColorAndTailCall UNSURE vdp2_SetBackColorAndTailCall sets uniform 4 words and bits, back color link unproven
+LB 0x06013ef0 char_SelectSwapIfDiffer RENAME char_FreeBankIfFighterDiffers clears load slots and frees sound bank if slot fighter ids differ, no swap
+LB 0x06013f32 char_SelectAdvanceStep CONFIRM char_SelectAdvanceStep picks opponent fighter, fills load record for state machine
+LB 0x060140a4 char_SelectRunStateMachine CONFIRM char_SelectRunStateMachine stepwise fighter/char/stage load states, returns 1 when done
+LB 0x060142a6 mode_ResetSystemsAndInit CONFIRM mode_ResetSystemsAndInit stops cd/sound, clears queues, sets state 5
+LB 0x06014c34 vdp2_InitScreenSetup CONFIRM vdp2_InitScreenSetup display off, color offsets, plane addr regs
+LB 0x06014c8e vdp2_LoadScreenTables CONFIRM vdp2_LoadScreenTables DMA row loop to VRAM then color offset
+LB 0x06014cf2 stage_SelectEntry CONFIRM stage_SelectEntry stores index/sub, picks table row, inits vdp2 screen; weak evidence
+LB 0x06014d90 stage_LoadStateMachine CONFIRM stage_LoadStateMachine start chunked copy, wait, load tables, 1 at state 3
+LB 0x06014f08 cam_ApplyViewFromParams RENAME cam_ApplyFighterRelativeView table idx picks fighter record, inverse translate and Y rotate
+LB 0x06014f66 cam_InitCameraWork CONFIRM cam_InitCameraWork fills camera struct defaults and inits three matrices
+LB 0x06015050 cam_ResetCameraState CONFIRM cam_ResetCameraState first-call init, zero vectors, flags default
+LB 0x06015110 cam_UpdateFrame CONFIRM cam_UpdateFrame gathers positions then step+view or rotation setup
+LB 0x06015158 cam_ComputeScreenBounds CONFIRM cam_ComputeScreenBounds projects two points per fighter, stores extents
+LB 0x06015284 cam_GatherFighterPositions CONFIRM cam_GatherFighterPositions copies fighter fields, midpoint distance angle
+LB 0x06015444 cam_ConvertFighterPositions CONFIRM cam_ConvertFighterPositions scale xyz, negate z per fighter
+LB 0x0601549a cam_StepInterpolation CONFIRM cam_StepInterpolation runs shot update then tweens pos/target by counters
+LB 0x0601567c cam_GetModeByte RENAME cam_GetTweenType byte selects none/ease/linear tween branch in cam_StepInterpolation
+LB 0x060156b0 cam_DispatchMode CONFIRM cam_DispatchMode switch 1..9 on shot id calling per-shot updates
+LB 0x06015704 cam_UpdateDefaultMode CONFIRM cam_UpdateDefaultMode reset on first-frame flag else default follow
+LB 0x0601573a cam_AddVelocityToPosition UNSURE cam_AddVelocityToPosition adds a global to a camera field, source meaning unclear
+LB 0x0601574c cam_RunWithTempMask RENAME cam_SetFovTempClamp calls sgl set-fov with arg while a global word is temporarily overridden then restored
+LB 0x0601578c cam_SetupViewAndFacing CONFIRM cam_SetupViewAndFacing sets fov, scroll origin, lookat, rotation; facing part unverified
+LB 0x06015938 cam_InitDefaultPosTarget CONFIRM cam_InitDefaultPosTarget fills default pos and target vectors
+LB 0x0601598e cam_StartShotRandom CONFIRM cam_StartShotRandom random shot variant sets pos/target, sets timers
+LB 0x06015c34 cam_UpdateAndSavePosition CONFIRM cam_UpdateAndSavePosition default follow then saves pos/target backup
+LB 0x06015c72 cam_UpdateOrRestoreShot CONFIRM cam_UpdateOrRestoreShot restores saved pos or dispatches move-based shots
+LB 0x06015d00 cam_UpdateSpecialMoveShot CONFIRM cam_UpdateSpecialMoveShot per-move-id camera aim via lookat and rotated offset, move ids 0x4f 0x51 0x53 special-cased
+LB 0x06015f0a cam_ResetShotTimers CONFIRM cam_ResetShotTimers sets counter 1, clears second, zeroes two vec3
+LB 0x06015f68 cam_UpdateMoveTableShot CONFIRM cam_UpdateMoveTableShot looks move id up in table, decodes keyframe vectors to cam pos/target
+LB 0x06016070 cam_UpdateFinishingShot CONFIRM cam_UpdateFinishingShot KO shot, keyframe vectors plus frame thresholds, mode 8
+LB 0x0601622c cam_UpdateWinnerShot CONFIRM cam_UpdateWinnerShot mode 9 winner camera from fighter record position
+LB 0x060162fc cam_UpdateThrowShot CONFIRM cam_UpdateThrowShot mode 6 throw camera, vector between fighters
+LB 0x06016512 cam_UpdateDefaultFollow CONFIRM cam_UpdateDefaultFollow framing, eye/target build, step deltas, knockdown branch, zoom
+LB 0x060165f2 cam_UpdateZoomSmoothing CONFIRM cam_UpdateZoomSmoothing time-based zoom amount via fixed mul and lookup
+LB 0x060166c0 cam_UpdateKnockdownShot CONFIRM cam_UpdateKnockdownShot active when state 0xb or 0xc, picks fighter and step table
+LB 0x060169ce cam_ComputeFollowAndApply CONFIRM cam_ComputeFollowAndApply framing distance then eye target with side flip
+LB 0x06016a0a cam_BuildEyeTarget CONFIRM cam_BuildEyeTarget builds eye and target vectors, sets tween counters
+LB 0x06016ad8 cam_SetStepDeltas CONFIRM cam_SetStepDeltas per-frame deltas from eye/target diff
+LB 0x06016b76 cam_DecodeKeyframeVectors CONFIRM cam_DecodeKeyframeVectors decodes 7 values via small-float or curve eval into eye and target
+LB 0x06016c2c cam_ComputeFramingDistance CONFIRM cam_ComputeFramingDistance fighter-to-cam deltas plus state flag gathering for framing
+LB 0x06016f2e fighter_BothIdleCheck RENAME fighter_EitherInState20 returns 1 if EITHER fighter state byte equals 0x20 not both idle
+LB 0x06016f48 cam_SelectShotState CONFIRM cam_SelectShotState state transition table for shot state var
+LB 0x06016ff4 fighter_AnyHitFlagSet CONFIRM fighter_AnyHitFlagSet either fighter flag bit7 with nonzero counter
+LB 0x06017022 cam_CheckDistanceThreshold CONFIRM cam_CheckDistanceThreshold max of two coords vs thresholds, returns flag
+LB 0x0601705a pad_GetEdgeCombined CONFIRM pad_GetEdgeCombined ORs both pad words, returns none/press/held/release code
+LB 0x0601708c math_DistanceLessThanRange RENAME math_DotXZBelowScaledMag computes xz dot of two vecs vs limit times sqrt of product, a cosine test not a distance
+LB 0x0601711c math_OutsideStageBoundsX RENAME math_DotXZOutsideCamRange normalized xz dot vs cam struct low/high bounds, no stage evidence
+LB 0x06017194 math_OutsideSymmetricRange RENAME math_DotXZOutsideSymRange normalized xz dot outside plus minus limit, same family as siblings
+LB 0x060171f0 math_FixedPow CONFIRM math_FixedPow repeated fixed multiply up to 11 times
+LB 0x0601723a math_DecodeSmallFloat CONFIRM math_DecodeSmallFloat packed 16-bit exponent/mantissa/sign decode
+LB 0x060172a4 math_HermiteInterpolate CONFIRM math_HermiteInterpolate cubic hermite basis from two decoded keys
+LB 0x0601738c math_EvalKeyframeCurve CONFIRM math_EvalKeyframeCurve finds segment in key list then hermite
+LB 0x06017488 menu_UpdateOptionsInput RENAME cam_UpdateDebugViewInput cycles view byte 0x06070652 1..3 shared with cam_UpdateFrame, edits view angle/dist values, not game options
+LB 0x06017890 render_SetupCameraRotation CONFIRM render_SetupCameraRotation unit matrix, scale, lookat from vector set, rotX
+LB 0x060179c0 fighter_InitDisplayTables CONFIRM fighter_InitDisplayTables per-fighter count/table init, body truncated
+LB 0x06017b8c render_ToggleBufferPointers CONFIRM render_ToggleBufferPointers flips index and swaps paired buffer pointers
+LB 0x06017c3c render_BuildHitSphereLists RENAME hit_BuildSphereBoundsBytes writes per-sphere 6 byte quantized min/max (x±r)>>21 boxes and calls hit_BuildFighterExtents
+LB 0x06017d32 hit_GetReachByAnimFrame CONFIRM hit_GetReachByAnimFrame reach const by anim frame 0x30..0x40 ramp
+LB 0x06017d9e hit_CollectBoneSpheres CONFIRM hit_CollectBoneSpheres walks bone list, transforms centers, tracks extents
+LB 0x06017f1e hit_BuildFighterExtents CONFIRM hit_BuildFighterExtents builds extent record from sphere extents and reach
+LB 0x06018016 hit_OffsetSphereArray CONFIRM hit_OffsetSphereArray adds xyz offset to each sphere stride 0x10
+LB 0x06018048 fighter_GetModeOrJump UNSURE fighter_GetModeOrJump returns mode byte or calls handler when 6, mode var meaning unknown
+LB 0x0601805a hit_CheckCloseCombat RENAME hit_RunCollisionAndReaction gates on fighter state pair, calls distance/hit pipeline then damage_ApplyHitReaction, pushback counters
+LB 0x06018144 hit_ComputeFighterDistance RENAME hit_RunPipelineIfNear computes distance then, if below limit, runs clamp, clear, reset, body hits, damage_ComputeHit
+LB 0x06018234 hit_ClampSphereLimits CONFIRM hit_ClampSphereLimits min/max byte pair merge of two bound arrays per sphere
+LB 0x060182e8 hit_ClearHitFlags CONFIRM hit_ClearHitFlags fills result array with -1 then zeroes parts by fighter flag bit
+LB 0x0601833e hit_ResetHitRecords CONFIRM hit_ResetHitRecords inits per-fighter record arrays with sentinels and bit masks
+LB 0x060184c4 hit_ResolveBodyHits CONFIRM hit_ResolveBodyHits loops sphere/part bitmasks of both fighters, accumulates hit results and reaction records
+LB 0x06018734 guard_CheckBlockResult CONFIRM guard_CheckBlockResult returns -1/0/1/2/3 by attack flags, move ids 7/8/0x22, caller damage_ComputeHit uses as guard result
+LB 0x06018886 math_PowerOfFour UNSURE math_PowerOfFour loop of shift-by-2 then Div64 helper, not clearly power of four
+LB 0x060188b8 damage_ComputeHit CONFIRM damage_ComputeHit name fits body and callers
+LB 0x06018b36 damage_ApplyHitReaction CONFIRM damage_ApplyHitReaction name fits body and callers
+LB 0x06018da6 hit_ComputeKnockbackX RENAME hit_ClampPushbackXZ clamps per-fighter x/z push vector against limit table
+LB 0x06018e6c hit_ComputeKnockbackAxes RENAME hit_ClampPushAndTransfer clamps x/z push, moves excess to opponent
+LB 0x06018f98 hit_ComputeContactBox RENAME hit_LimitPushByExtents reduces push values by overshoot past min/max extents
+LB 0x060190aa hit_AdjustPositionsForOverlap CONFIRM hit_AdjustPositionsForOverlap name fits body and callers
+LB 0x0601919a hit_CheckOverlapAndPush CONFIRM hit_CheckOverlapAndPush name fits body and callers
+LB 0x0601925c hit_ApplyPushbackScale CONFIRM hit_ApplyPushbackScale name fits body and callers
+LB 0x060193a4 fighter_SetHurtMaskBits CONFIRM fighter_SetHurtMaskBits name fits body and callers
+LB 0x06019416 damage_ReduceGuardGauge RENAME damage_SubtractLife subtracts scaled damage from +8 short clamped at zero
+LB 0x06019474 hit_FindClosestHurtSphere RENAME hit_ComputeContactPoint averages masked sphere positions into contact point, not nearest search
+LB 0x06019608 sound_PlayCueOffsetByMode CONFIRM sound_PlayCueOffsetByMode name fits body and callers
+LB 0x06019634 ai_UpdateInputSelection UNSURE ai_UpdateInputSelection pad join/select handling, purpose not clear from truncated body
+LB 0x060198f8 fighter_UpdateMotionScript RENAME fighter_DrawModelParts push/mul matrix per linked part, adds draw entries
+LB 0x060199d2 fighter_StartMoveSetup RENAME fighter_InitModelInstance allocs pool entry, sets global fighter ptrs, adds draw entries
+LB 0x06019e28 cd_PlayStageTrack RENAME save_InitBackupStatus uses backup work area 06075148 with audio pause bracket
+LB 0x06019ec0 math_StoreResultPair RENAME bup_CallStoreResult wraps backup-style call, stores result in out[0]
+LB 0x0601a2a8 save_SetSlotAndLoad RENAME save_InitBackupMenuState sets menu type byte and cursor, clears state bytes
+LB 0x0601a2c6 save_ShowBackupMessage CONFIRM save_ShowBackupMessage name fits body and callers
+LB 0x0601a3c4 save_CopyBlockToBackupRam RENAME vdp2_LoadMenuImageBlock writes color RAM and DMA to VRAM, not backup ram
+LB 0x0601a40a save_MenuUpdateInput CONFIRM save_MenuUpdateInput name fits body and callers
+LB 0x0601a548 save_DispatchState CONFIRM save_DispatchState name fits body and callers
+LB 0x0601a55c util_BcdToByte CONFIRM util_BcdToByte name fits body and callers
+LB 0x0601a57c util_BcdToWord CONFIRM util_BcdToWord name fits body and callers
+LB 0x0601a5a8 save_BuildSaveHeader RENAME save_WriteBackupFile builds header, checksums and writes file to backup
+LB 0x0601a6c8 save_BuildLastBronxHeader RENAME save_WriteLastBronxFile wrapper that writes game save file with fixed ids
+LB 0x0601a6d4 save_VerifyBackupData CONFIRM save_VerifyBackupData name fits body and callers
+LB 0x0601a752 save_InitWorkArea RENAME opt_ClearSettingsBlock zeroes 0x28-word block also used as pad mask by menus
+LB 0x0601a774 save_InitEntrySlot CONFIRM save_InitEntrySlot name fits body and callers
+LB 0x0601a842 save_InitEntrySlotA CONFIRM save_InitEntrySlotA name fits body and callers
+LB 0x0601a84a save_InitEntrySlotB CONFIRM save_InitEntrySlotB name fits body and callers
+LB 0x0601a852 save_InitRankingTableA CONFIRM save_InitRankingTableA name fits body and callers
+LB 0x0601a8ba save_InitRankingTableB CONFIRM save_InitRankingTableB name fits body and callers
+LB 0x0601a944 save_InitAllTables CONFIRM save_InitAllTables name fits body and callers
+LB 0x0601a956 save_InitAndBuildHeader CONFIRM save_InitAndBuildHeader name fits body and callers
+LB 0x0601a970 crc32_Calculate CONFIRM crc32_Calculate name fits body and callers
+LB 0x0601a9b0 save_StoreChecksum CONFIRM save_StoreChecksum name fits body and callers
+LB 0x0601a9ce save_CompareChecksum CONFIRM save_CompareChecksum name fits body and callers
+LB 0x0601aa04 text_PrintAtOffset CONFIRM text_PrintAtOffset name fits body and callers
+LB 0x0601acb0 menu_MoveCursorVertical CONFIRM menu_MoveCursorVertical name fits body and callers
+LB 0x0601ad4e menu_DrawCursorBox CONFIRM menu_DrawCursorBox name fits body and callers
+LB 0x0601aeca menu_CenterTextX CONFIRM menu_CenterTextX name fits body and callers
+LB 0x0601aed8 menu_PrintLabelPair CONFIRM menu_PrintLabelPair name fits body and callers
+LB 0x0601afe0 menu_DrawOptionsCursor CONFIRM menu_DrawOptionsCursor name fits body and callers
+LB 0x0601b0a4 menu_MoveOptionsCursor CONFIRM menu_MoveOptionsCursor name fits body and callers
+LB 0x0601b0f2 menu_MoveOptionsCursorGrid CONFIRM menu_MoveOptionsCursorGrid name fits body and callers
+LB 0x0601b1d6 menu_InitCursorState RENAME menu_InitScrollState inits zoom and scroll vars used by menu_ScrollByPad
+LB 0x0601b394 menu_ClampScrollPositions CONFIRM menu_ClampScrollPositions name fits body and callers
+LB 0x0601b428 menu_ScrollByPad CONFIRM menu_ScrollByPad name fits body and callers
+LB 0x0601b750 vdp2_InitDisplayDefaults CONFIRM vdp2_InitDisplayDefaults name fits body and callers
+LB 0x0601b7b8 vdp1_InitCommandListState CONFIRM vdp1_InitCommandListState name fits body and callers
+LB 0x0601b7dc vdp1_AddCommandEntry CONFIRM vdp1_AddCommandEntry name fits body and callers
+LB 0x0601b828 vdp1_ResetCommandEntry CONFIRM vdp1_ResetCommandEntry name fits body and callers
+LB 0x0601b88a vdp1_AddCommandEntryType2 CONFIRM vdp1_AddCommandEntryType2 name fits body and callers
+LB 0x0601b8ce vdp2_SetLayerEnableMask CONFIRM vdp2_SetLayerEnableMask name fits body and callers
+LB 0x0601b934 vdp1_SetSystemClip CONFIRM vdp1_SetSystemClip name fits body and callers
+LB 0x0601b95e vdp1_DrawCommandList CONFIRM vdp1_DrawCommandList name fits body and callers
+LB 0x0601ba1c render_SetupMovieFrame UNSURE render_SetupMovieFrame type 2 draw entry, computes frame rect from points, purpose unclear
+LB 0x0601bd90 vdp1_BuildSpriteCommands RENAME vdp2_BuildLayerParams fills 3 layer param records consumed by gfx_SetupThreeLayerParams
+LB 0x0601be38 vdp2_SetupSpritePriorities CONFIRM vdp2_SetupSpritePriorities name fits body and callers
+LB 0x0601bf14 vdp1_SetupAnimPointers UNSURE vdp1_SetupAnimPointers fills two-row halfword table, role unclear
+LB 0x0601bfc0 vdp1_LoadTextureBlock RENAME vdp2_LoadBackgroundBlock cram write plus DMA to vdp2 area, mode-specific clears
+LB 0x0601c07c vdp1_LoadObjectTextures RENAME vdp2_LoadStageGraphics copies header, builds layer params, DMA tiles and palette
+LB 0x0601c1b8 vdp2_SetupGameScreen CONFIRM vdp2_SetupGameScreen name fits body and callers
+LB 0x0601c25c vdp1_InitObjectTable RENAME vdp2_InitLayerTable inits 3 layer records and vdp2 setup
+LB 0x0601c490 render_ComputeBackgroundScroll CONFIRM render_ComputeBackgroundScroll name fits body and callers
+LB 0x0601c828 render_DrawBackgroundLayer CONFIRM render_DrawBackgroundLayer name fits body and callers
+LB 0x0601c8a8 render_DrawFrameCycle3 RENAME render_DrawStageBackground cycles matrix, draws background, then effects
+LB 0x0601c99e render_DrawFrameCycle3Flags RENAME render_DrawStageBackgroundDual two background planes selected by position sign
+LB 0x0601cb0e render_FinishFrame CONFIRM render_FinishFrame name fits body and callers
+LB 0x0601cb30 vdp2_LoadScreenFontStrings RENAME vdp2_LoadColorTablesByMode loads packed color tables per mode, not fonts
+LB 0x0601cc6e vdp2_LoadSceneEntry CONFIRM vdp2_LoadSceneEntry name fits body and callers
+LB 0x0601ccc8 mode_SetStateAndClear CONFIRM mode_SetStateAndClear name fits body and callers
+LB 0x0601ced4 gfx_SetupThreeLayerParams CONFIRM gfx_SetupThreeLayerParams name fits body and callers
+LB 0x0601d1ec fighter_SetupPalette CONFIRM fighter_SetupPalette name fits body and callers
+LB 0x0601ede4 snd_StopChannels0to3 CONFIRM snd_StopChannels0to3 name fits body and callers
+LB 0x0601f876 result_PollSkipInput UNSURE result_PollSkipInput pad test then sound command, purpose unclear
+LB 0x06021670 scr_InitSideScreen CONFIRM scr_InitSideScreen name fits body and callers
+LB 0x060216b2 scr_StepSideScreen CONFIRM scr_StepSideScreen name fits body and callers
+LB 0x06022bda fighter_TryStartReactionAnim CONFIRM fighter_TryStartReactionAnim name fits body and callers
+LB 0x060235dc anim_SetupLinearTween RENAME anim_SetupTween2Seg builds two slope segments
+LB 0x06023a6c anim_SetupTween3Seg CONFIRM anim_SetupTween3Seg name fits body and callers
+LB 0x06023afe anim_SetupTweenRanged CONFIRM anim_SetupTweenRanged name fits body and callers
+LB 0x06023bd6 anim_RestartTween CONFIRM anim_RestartTween name fits body and callers
+LB 0x06023c1e fighter_StartKnockdownAnim CONFIRM fighter_StartKnockdownAnim name fits body and callers
+LB 0x06023cf4 fighter_StartKnockbackSlide CONFIRM fighter_StartKnockbackSlide name fits body and callers
+LB 0x06023f28 fighter_CheckTweenTimeout CONFIRM fighter_CheckTweenTimeout name fits body and callers
+LB 0x06023fe4 fighter_ResetToIdleAnim CONFIRM fighter_ResetToIdleAnim name fits body and callers
+LB 0x0602425e fighter_StartKnockbackAnim CONFIRM fighter_StartKnockbackAnim name fits body and callers
+LB 0x060242fc fighter_SetKnockbackDirTable CONFIRM fighter_SetKnockbackDirTable name fits body and callers
+LB 0x06024414 fighter_SetKnockbackToward CONFIRM fighter_SetKnockbackToward name fits body and callers
+LB 0x0602454c anim_ExtendTween CONFIRM anim_ExtendTween name fits body and callers
+LB 0x06024ba8 fighter_SetGuardFlags CONFIRM fighter_SetGuardFlags name fits body and callers
+LB 0x06024bcc fighter_StartGuardAnim CONFIRM fighter_StartGuardAnim name fits body and callers
+LB 0x06024c18 fighter_TickStunTimer CONFIRM fighter_TickStunTimer name fits body and callers
+LB 0x060259fa fighter_InitBothStartAnims CONFIRM fighter_InitBothStartAnims name fits body and callers
+LB 0x06025abc ai_SetFighterLevel RENAME fighter_SetInitialLife sets +8 short from option table, same field damage subtracts from
+LB 0x06025fb0 fight_StartRoundEndPoses CONFIRM fight_StartRoundEndPoses name fits body and callers
+LB 0x0602622c fighter_SelectFollowupMove CONFIRM fighter_SelectFollowupMove name fits body and callers
+LB 0x06026340 fighter_SelectMoveFlagsByType CONFIRM fighter_SelectMoveFlagsByType name fits body and callers
+LB 0x0602639c pad_ResolveGuardBits UNSURE pad_ResolveGuardBits direction bit compare returning codes, meaning unclear
+LB 0x06026494 input_ScanHistoryForRelease CONFIRM input_ScanHistoryForRelease scans history for neutral entry, sets cmd 0x20
+LB 0x06026590 input_ParseMoveChain CONFIRM input_ParseMoveChain chain-table walk over history, caller is command updater
+LB 0x06026878 input_SelectAttackCommand CONFIRM input_SelectAttackCommand button bits to attack cmd via move table match
+LB 0x06026f92 input_FinalizeCommand CONFIRM input_FinalizeCommand builds final command word from button/dir/move lookup
+LB 0x060270dc input_ParseCommandSimple CONFIRM input_ParseCommandSimple simple history scan, falls to finalize
+LB 0x06027714 pad_UpdateSystemRepeat UNSURE pad_UpdateSystemRepeat start-style press repeat state; flag likely pause but unproven
+LB 0x0602792c fighter_SetStartSides CONFIRM fighter_SetStartSides angle quadrant to side index for both fighters
+LB 0x060279b0 fighter_UpdateOpenFlag UNSURE fighter_UpdateOpenFlag byte8 flag from opponent idle/attack state, meaning unclear
+LB 0x06028328 fighter_SetHitLevelTable RENAME fighter_SetHitReactionTable fills reaction id halfwords by hit flags, not a level table
+LB 0x06029006 anim_StartMotionByFrames CONFIRM anim_StartMotionByFrames builds tween segments for frame count
+LB 0x060293d4 slide_InitFixedSpeed CONFIRM slide_InitFixedSpeed fixed speed slide init at fighter pos
+LB 0x0602942c slide_InitSquareDecel CONFIRM slide_InitSquareDecel decel from steps squared
+LB 0x060294a8 slide_InitDistanceTime CONFIRM slide_InitDistanceTime distance/time based init
+LB 0x0602953c slide_InitFramesVelocity CONFIRM slide_InitFramesVelocity velocity from frames
+LB 0x06029634 slide_InitTowardOpponent CONFIRM slide_InitTowardOpponent direction to opponent, xz velocity
+LB 0x06029d74 fighter_TurnTowardTarget CONFIRM fighter_TurnTowardTarget turns Y angle toward target with per-state rate
+LB 0x0602a5a8 fighter_FaceOpponentAndRealign_2 RENAME fighter_FaceTargetRealignPos has numeric suffix; faces target then recomputes position via delta
+LB 0x0602b2ea chr_MoveByTransformedDelta RENAME chr_GetTransformedDeltaAngle transforms pos, returns atan-style angle of xz delta, no movement
+LB 0x0602b34c chr_MoveByBoneDelta RENAME chr_GetBoneChainDeltaAngle same as above using bone chain transform
+LB 0x0602b3a4 chr_GetBoneWorldPos CONFIRM chr_GetBoneWorldPos loads pos, bone chain transform to out
+LB 0x0602b3dc chr_GetBoneWorldPosVec CONFIRM chr_GetBoneWorldPosVec copies pos to vec then bone transform
+LB 0x0602b400 chr_GetLocalDeltaVec CONFIRM chr_GetLocalDeltaVec transformed minus pos, y zero, normalized
+LB 0x0602b480 math_TransformPointByAngles CONFIRM math_TransformPointByAngles rotates three axes by fighter angles then transforms point
+LB 0x0602b4fe math_TransformPointBoneChain CONFIRM math_TransformPointBoneChain nested joint rotations/translations then point transform
+LB 0x0602b61c chr_GetJointPositions CONFIRM chr_GetJointPositions outputs transformed point and two joint xyz
+LB 0x0602b69c loadslot_InitAll CONFIRM loadslot_InitAll resets two slots, called at hardware init
+LB 0x0602b6be loadslot_Clear CONFIRM loadslot_Clear resets one slot to 0xff,0xff,0,0
+LB 0x0602b6d4 loadslot_SetFlags CONFIRM loadslot_SetFlags sets flag bytes 2,3 of slot from bool
+LB 0x0602b6ec loadslot_SelectBufferAddr RENAME loadslot_FindFreeBuffer returns free load region by slot flags, null when none (callers hang on null)
+LB 0x0602b742 cd_LoadFileToBuffer RENAME cd_StartFileLoad sets up copy request and opens file async; hangs if dest too small
+LB 0x0602b924 loadjob_SetupMotion CONFIRM loadjob_SetupMotion stores fighter/slot/side, queues file load
+LB 0x0602b972 loadjob_ApplyMotionPointers RENAME loadjob_RelocateFighterData after copy done relocates model pack, sprite lists, writes CRAM colors
+LB 0x0602baac vdp_AllocTextureBuffer RENAME vdp_StartTextureLoad queues file copy into buffer and stores pointer
+LB 0x0602bac0 vdp_UploadTextureBuffer CONFIRM vdp_UploadTextureBuffer after copy done uploads sprite list and images
+LB 0x0602baf6 texload_SetupSlot CONFIRM texload_SetupSlot marks slot active and stores source descriptor ptr
+LB 0x0602bb22 texload_StepSlot CONFIRM texload_StepSlot 3-step sprite list copy/upload/palette state machine
+LB 0x0602bbe2 texload_SetupAll CONFIRM texload_SetupAll inits request and clears states
+LB 0x0602bbfc texload_StepAll CONFIRM texload_StepAll multi-state load: queue copy, model pack, second buffer
+LB 0x0602bcd0 cd_ReadTocInfo CONFIRM cd_ReadTocInfo reads TOC, counts data tracks, first/last
+LB 0x0602bd28 cdda_UpdateFade CONFIRM cdda_UpdateFade per-frame fade countdown lowers volume, stops at zero
+LB 0x0602bdb8 cdda_PlayTrack CONFIRM cdda_PlayTrack starts track range, sets volume/pan
+LB 0x0602be82 cdda_PlayTrackFromTable CONFIRM cdda_PlayTrackFromTable selects entry by index bytes and plays
+LB 0x0602beac cdda_Stop CONFIRM cdda_Stop clears BGM state and stops
+LB 0x0602bf1c cdda_RestartVolume CONFIRM cdda_RestartVolume resets fade state and reapplies pan/volume
+LB 0x0602c340 audio_StartStream CONFIRM audio_StartStream zeroes counter and starts pcm slot from struct params
+LB 0x0602c36e audio_RewindStream CONFIRM audio_RewindStream resets countdown and buffer pointer then calls
+LB 0x0602c3a8 audio_FillStreamBuffer CONFIRM audio_FillStreamBuffer copies/zero-pads or DMAs chunk into ring, returns done
+LB 0x0602c81a pcmslot_Init CONFIRM pcmslot_Init copies name, resolves gfs id, sets slot defaults
+LB 0x0602c8ae pcmslot_Reset CONFIRM pcmslot_Reset closes group handle and clears slot fields
+LB 0x0602c8f8 pcmslot_FindByName CONFIRM pcmslot_FindByName matches gfs id across 10 slots or -1
+LB 0x0602c956 pcmslot_StartPcmStream CONFIRM pcmslot_StartPcmStream allocs slot, opens stream, waits idle
+LB 0x0602ca62 pcmslot_StartOrReuse CONFIRM pcmslot_StartOrReuse finds or inits slot and starts stream
+LB 0x0602cbb4 sound_SelectChannelByType UNSURE sound_SelectChannelByType picks one of two buffers by type compare, hangs otherwise; purpose unclear and no callers
+LB 0x0602cc28 pcmslot_SetFlagByName CONFIRM pcmslot_SetFlagByName finds slot by name, stores flag, restarts transfer
+LB 0x0602cca8 pcmslot_ClearTailBuffer CONFIRM pcmslot_ClearTailBuffer zero-fills remaining buffer tail
+LB 0x0602cce0 pcmslot_UpdateAll CONFIRM pcmslot_UpdateAll per-frame loop over 10 slots refills and ends streams
+LB 0x0602ce98 pcmslot_ResetStates CONFIRM pcmslot_ResetStates closes non-looping slots, rewinds state-3 slots
+LB 0x0602cf08 pcmslot_StopAll CONFIRM pcmslot_StopAll calls sound lib then resets states
+LB 0x0602cf16 pcmslot_StopAllAndBgm CONFIRM pcmslot_StopAllAndBgm stops BGM and all slots
+LB 0x0602cf32 pcmslot_ReleaseAll CONFIRM pcmslot_ReleaseAll stops BGM and closes every active slot
+LB 0x0602d018 pcmslot_IsPlayDone CONFIRM pcmslot_IsPlayDone returns 1 when finished or not found
+LB 0x0602d3de fs_InitSystem CONFIRM fs_InitSystem inits name list, four buffer descriptors, stream lib, dir handles
+LB 0x0602d55c sys_ResetDisplayA RENAME sys_ResetAndRestartA waits frames, closes streams, resets video/callbacks then launches routine with boot entry
+LB 0x0602d5b6 sys_ResetDisplayB RENAME sys_ResetAndRestartB same as A with different target table
+LB 0x0602d7c4 menu_InitCursorState_2 RENAME fight_InitPlayerFromSelection clears player input buf, inits fighter struct from char tables, resets stats block; numeric suffix
+LB 0x0602d90c fight_UpdateFighterStates_2 RENAME fight_DispatchFighterStates per-fighter setup then dispatch on state id; numeric suffix and differs from sibling
+LB 0x0602e1b4 input_CheckFrameCount CONFIRM input_CheckFrameCount compares computed count to per-player table limit
+LB 0x0602e23e inputbuf_ComputeEdges CONFIRM inputbuf_ComputeEdges pressed/released bits from prev and cur frame into history
+LB 0x0602e734 cmdparse_StepSequence CONFIRM cmdparse_StepSequence emits next input byte with hold counters by mode
+LB 0x0602e93a fighter_InitState CONFIRM fighter_InitState clears fighter struct, sets side/id, inits ai sub-structs and defaults
+LB 0x0602eae4 fighter_UpdateAttackLevel CONFIRM fighter_UpdateAttackLevel high/mid/low level 1-3 from attack category switch
+LB 0x0602f3cc match_ResetStatsBlock CONFIRM match_ResetStatsBlock zero-fills per-player stats by mode
+LB 0x0602f54e match_UpdateAttackStats CONFIRM match_UpdateAttackStats sets 0x20/0x40/0x80 attack bits and bumps counters
+LB 0x0602fb80 ai_StepOutcomeState RENAME ai_StepApproachAttackState states: wait, try close-in attack, read move queue; no outcome logic
+LB 0x0602fc48 match_CountOutcomeStats CONFIRM match_CountOutcomeStats per-state counters in match stats
+LB 0x0602fe40 ai_ResolveFinishState CONFIRM ai_ResolveFinishState handles states 0x17-0x1d, sets timers, tries attack opportunity
+LB 0x06030654 ai_StepKnockdownState CONFIRM ai_StepKnockdownState handles states 0x1b/0x1d/0x1f with mode counters
+LB 0x06030780 ai_StepRoundCounter RENAME ai_StepBumpAttemptCounters bumps two attempt counters at +0x44/+0x48 once; not a round counter
+LB 0x060307d2 ai_DecideAction CONFIRM ai_DecideAction per-frame decision: stats, attack opportunity, state 0x16/0x1c
+LB 0x06030a80 ai_StepGuardState CONFIRM ai_StepGuardState state 0x18 handler with counter/mask guard flag
+LB 0x06030b62 ai_CheckGuardBreak CONFIRM ai_CheckGuardBreak counts state 7 frames and evaluates guard-break conditions
+LB 0x06030d36 ai_StepState14Timer CONFIRM ai_StepState14Timer state 0x14 with 10-frame timer, checks 0x19-0x1b
+LB 0x06030e9c ai_UpdateAttackBits CONFIRM ai_UpdateAttackBits sets flag bits 4/8 from opponent 0x40/0x80 attack flags
+LB 0x06030fc0 ai_StepState25Timer CONFIRM ai_StepState25Timer state 0x25 countdown, sets 0x3c timer and bumps counter
+LB 0x0603100c ai_StepRoundEnd RENAME ai_StepActionTimeout ends action when frame counter passes limit; no round logic in body
+LB 0x0603120a ai_StepApproachGuard CONFIRM ai_StepApproachGuard guard flag branch then guard-break checks by mode or queue cmd; acceptable
+LB 0x060313a4 ai_CheckAttackOpportunity CONFIRM ai_CheckAttackOpportunity distance/timer/flag gating of attack decision
+LB 0x06031730 ai_SetStanceState CONFIRM ai_SetStanceState sets state 0x13 substate from range class param
+LB 0x06031872 ai_ClassifyRangeBands CONFIRM ai_ClassifyRangeBands bands two distances vs table then calls stance setter
+LB 0x060319fc ai_ChooseNextAction CONFIRM ai_ChooseNextAction substate-driven action selection
+LB 0x06031fb8 ai_ChooseAttackOrGuard CONFIRM ai_ChooseAttackOrGuard sets input bits for attack/guard, falls to ChooseNextAction
+LB 0x0603257c ai_StateIdleStart UNSURE ai_StateIdleStart substate machine with action timer and input flags; idle role unproven
+LB 0x06032688 ai_CheckThrowOpportunity CONFIRM ai_CheckThrowOpportunity opponent flags and distance gate, sets state 6, returns 1
+LB 0x06032786 ai_MainDecision CONFIRM ai_MainDecision big per-frame decision for states 0x17..0x1d; generic but fits
+LB 0x06032dc6 ai_StateApproach CONFIRM ai_StateApproach substate machine applying move action to input, gated on opponent flags
+LB 0x0603300a ai_ReadMoveQueue CONFIRM ai_ReadMoveQueue steps command sequence at +0x68 via parser, resets states on end
+LB 0x0603314a ai_StateWalkBack CONFIRM ai_StateWalkBack picks dir 2 or 7 on distance, applies, countdown; used for recovery
+LB 0x06033214 ai_StateAttackWindup UNSURE ai_StateAttackWindup action 5/9 then state 0x16 then countdown; windup vs full attack unproven
+LB 0x0603335c ai_StateAttackRecover UNSURE ai_StateAttackRecover attack counter inc, action 5, countdown to state 0xd; role unclear vs windup
+LB 0x060334d0 ai_StatePlayCommandSequence CONFIRM ai_StatePlayCommandSequence reads move queue, plays scripted sequence, sets 0x1d
+LB 0x060339d4 ai_StateSpecialMove UNSURE ai_StateSpecialMove midpoint of positions and action apply; special-move role unproven
+LB 0x06033b82 ai_StateWaitReact UNSURE ai_StateWaitReact random/timer gated react choice, sets 0x1f; role plausible but unproven
+LB 0x06033e84 ai_StateGuardStep CONFIRM ai_StateGuardStep substates with timers, sets input bit 0x20, picks action by distance
+LB 0x06033fe0 move_HasLowCommand UNSURE move_HasLowCommand scans chain for type byte 0..2; meaning of Low unproven
+LB 0x060340ac move_LoadCommandInputs CONFIRM move_LoadCommandInputs copies up to 4 chain entries input bits and types into 0x14-stride records
+LB 0x060341c4 ai_EncodeStickDirection CONFIRM ai_EncodeStickDirection maps first set of 9 direction bits to pad dir byte code
+LB 0x060342b8 ai_GetCharaLevelCount RENAME ai_GetMaxSkillLevel returns count-1 as top skill level index; consumed as level arg by table setter
+LB 0x060342e4 ai_FillSkillParams CONFIRM ai_FillSkillParams writes 12 skill param slots from scaled table values
+LB 0x0603439a ai_SetSkillFromTable CONFIRM ai_SetSkillFromTable per-mode and level table rows into skill params
+LB 0x06034438 ai_SetSkillFromTable_2 RENAME ai_SetSkillFromFighterTable row picked by fighter index global not level; avoids numeric suffix
+LB 0x06034494 ai_SetSkillDefault CONFIRM ai_SetSkillDefault fixed table row skill params
+LB 0x060344f0 ai_InterpSkillParams CONFIRM ai_InterpSkillParams base plus slope times level interpolation
+LB 0x060346e2 ai_SetSkillMax CONFIRM ai_SetSkillMax all skill params 100 and mode globals set
+LB 0x06034724 ai_SetSkillPassive UNSURE ai_SetSkillPassive low values in some slots, 100 in others; passive meaning unproven
+LB 0x06034756 ai_SetSkillAggressive UNSURE ai_SetSkillAggressive mixed values; aggressive meaning unproven
+LB 0x0603478a ai_InitSkillByMode CONFIRM ai_InitSkillByMode clears flags then dispatches skill setter by mode 0..9
+LB 0x060348c4 ai_LoadRangeBands CONFIRM ai_LoadRangeBands copies six band values from per-fighter row into struct
+LB 0x060348ee ai_ComputeRangeAndTiming CONFIRM ai_ComputeRangeAndTiming outputs distance class 1..3 and timing class 1..3
+LB 0x06034baa ai_CheckRepeatMove RENAME ai_FilterRepeatedMoves rebuilds candidate list excluding entries matching recent history, not a check
+LB 0x06034cb0 ai_GetMoveCommandMask CONFIRM ai_GetMoveCommandMask picks table row by state/level, returns mask used by ai_QueueCommand
+LB 0x06034ec8 ai_QueueCommand CONFIRM ai_QueueCommand stores args, validates via mask, tracks repeat count, calls cmdparse init
+LB 0x06034fe4 ai_QueueCommandAuto CONFIRM ai_QueueCommandAuto wrapper ComputeRangeAndTiming then QueueCommand
+LB 0x0603500c ai_ChooseAttackCommand UNSURE ai_ChooseAttackCommand body truncated; gates on timers and mode, command pick unproven
+LB 0x06035220 ai_CanStartAttack CONFIRM ai_CanStartAttack timer and flag gate returns nonzero when attack allowed
+LB 0x060354c8 ai_TryCloseInAttack CONFIRM ai_TryCloseInAttack picks side by range, queues cmd, sets state 0x16
+LB 0x0603556e ai_QueueCommand_1_1_3 UNSURE ai_QueueCommand_1_1_3 literal-arg wrapper; purpose unproven
+LB 0x0603557e ai_TryLowAttack UNSURE ai_TryLowAttack queues (1,3,0xc) in state 0x25; low unproven
+LB 0x060355f0 ai_TryQueueMidAttack UNSURE ai_TryQueueMidAttack queues cmds 0xb/9/4; mid unproven
+LB 0x0603573c ai_TryStartRecovery RENAME ai_TryStartWalkBack sets state 0x1a and calls ai_StateWalkBack when values low
+LB 0x0603579c ai_TryQueueRangedAttack UNSURE ai_TryQueueRangedAttack queues cmd 5 on range checks; ranged unproven
+LB 0x060358d0 ai_TryStartThrow UNSURE ai_TryStartThrow sets state 0x1b then calls windup handler; throw unproven
+LB 0x060359c2 ai_TryStartCounter UNSURE ai_TryStartCounter queues cmd 6 sets state 0x1d; counter unproven
+LB 0x06035a8a ai_TryQueueCommand7 CONFIRM ai_TryQueueCommand7 queues cmd 7 under state 0x19/0x1a timing
+LB 0x06035b4c ai_TryQueueCommand8 CONFIRM ai_TryQueueCommand8 queues cmd 8 when CanStartAttack fails and flags set
+LB 0x06035b96 ai_TryGuardBreak UNSURE ai_TryGuardBreak sets input bits 0x40|0x10 on conditions; guard break unproven
+LB 0x06035c08 ai_ClearState3 CONFIRM ai_ClearState3 zeroes three words
+LB 0x06035c12 ai_StepTimerState CONFIRM ai_StepTimerState 0..3 delayed copy state machine with 4 count
+LB 0x06035c56 ai_ClearState5 CONFIRM ai_ClearState5 zeroes five words
+LB 0x06035c64 ai_ApplyActionToInput CONFIRM ai_ApplyActionToInput maps action id to pad bits 0x20/0x10/0x80
+LB 0x06035dc2 ai_InitRangeThresholds CONFIRM ai_InitRangeThresholds loads per-fighter range row, band load, distance class 2/3, thresholds
+LB 0x06035eac ai_PickActionByDistance CONFIRM ai_PickActionByDistance compares distance to bands, sets action 1..5, applies to input
+LB 0x06035fe8 ai_GetFixedOrMinus1 CONFIRM ai_GetFixedOrMinus1 returns table constant under flags else -1
+LB 0x0603606c math_VectorDiffCross UNSURE math_VectorDiffCross body mostly unseen; vector subtract and cross plausible
+LB 0x060361d0 matrix_PushStack UNSURE matrix_PushStack pushes 0x28 record on GBR list; matrix semantics unproven
+LB 0x060361de matrix_PushStackCall UNSURE matrix_PushStackCall same push after helper call; matrix semantics unproven
+LB 0x06036224 sys_InitVideoMode CONFIRM sys_InitVideoMode masks mode and calls tv mode, vdp display init, vblank setup helpers
+LB 0x06036360 bits_InsertField CONFIRM bits_InsertField builds mask from widths and merges field into word
+LB 0x060363c8 bits_ExtractField CONFIRM bits_ExtractField shifts left then right by widths to extract field
+LB 0x06036400 math_Div64Software CONFIRM math_Div64Software SH-2 DIV1-style software divide loop
+LB 0x060364b4 math_Div32Software CONFIRM math_Div32Software SH-2 unsigned DIV1-style divide
+LB 0x0603655c math_Div64Software_2 RENAME math_Div64SoftwareSigned signed 64-bit divide returning longlong
+LB 0x06036624 math_Div32Software_2 RENAME math_Div32SoftwareLong unsigned divide returning longlong; zero divisor stores constant
+LB 0x06036be2 softfloat_DoubleAdd CONFIRM softfloat_DoubleAdd aligns exponents with shifts and adds
+LB 0x06036bf0 softfloat_DoubleAddCore CONFIRM softfloat_DoubleAddCore double add comparing exponents, handles NaN and inf
+LB 0x06036df2 softfloat_DoubleAddSwapped CONFIRM softfloat_DoubleAddSwapped swaps operand halves and calls DoubleAdd
+LB 0x06036eb0 softfloat_FloatAdd CONFIRM softfloat_FloatAdd name matches body
+LB 0x0603711c softfloat_DoubleToInt CONFIRM softfloat_DoubleToInt name matches body
+LB 0x060371a8 softfloat_DoubleCompare CONFIRM softfloat_DoubleCompare name matches body
+LB 0x06037250 softfloat_IntToDouble CONFIRM softfloat_IntToDouble name matches body
+LB 0x060372a4 softfloat_IntToFloat CONFIRM softfloat_IntToFloat name matches body
+LB 0x060372fc softfloat_FloatToInt CONFIRM softfloat_FloatToInt name matches body
+LB 0x06037390 hw_SetRegMasked CONFIRM hw_SetRegMasked name matches body
+LB 0x060a0e8c aud_LockAcquire CONFIRM aud_LockAcquire name matches body
+LB 0x060a0e96 aud_LockRelease CONFIRM aud_LockRelease name matches body
+LB 0x060a0ea4 aud_GetVolumeA CONFIRM aud_GetVolumeA name matches body
+LB 0x060a0eac aud_GetVolumeB CONFIRM aud_GetVolumeB name matches body
+LB 0x060a0eb4 aud_SetVolumeA CONFIRM aud_SetVolumeA name matches body
+LB 0x060a0ede aud_SetVolumeB CONFIRM aud_SetVolumeB name matches body
+LB 0x060a0f18 aud_GetLevelA CONFIRM aud_GetLevelA name matches body
+LB 0x060a0f20 aud_GetLevelB CONFIRM aud_GetLevelB name matches body
+LB 0x060a0f44 aud_IsFlagBit0Clear CONFIRM aud_IsFlagBit0Clear name matches body
+LB 0x060a0f4e aud_IsFlagBit1Clear CONFIRM aud_IsFlagBit1Clear name matches body
+LB 0x060a0f58 aud_SetFlagBit0 CONFIRM aud_SetFlagBit0 name matches body
+LB 0x060a0f8c aud_SetFlagBit1 CONFIRM aud_SetFlagBit1 name matches body
+LB 0x060a0fc8 aud_IsFlag2Bit0Clear CONFIRM aud_IsFlag2Bit0Clear name matches body
+LB 0x060a0fd2 aud_IsFlag2Bit1Clear CONFIRM aud_IsFlag2Bit1Clear name matches body
+LB 0x060a0fdc aud_SetFlag2Bit0 CONFIRM aud_SetFlag2Bit0 name matches body
+LB 0x060a100c aud_SetFlag2Bit1 CONFIRM aud_SetFlag2Bit1 name matches body
+LB 0x060a1098 aud_CheckBothIdle CONFIRM aud_CheckBothIdle name matches body
+LB 0x060a10da aud_CheckEitherActive UNSURE aud_CheckEitherActive semantics look inverted
+LB 0x060a10f8 aud_MergeStatusBits CONFIRM aud_MergeStatusBits name matches body
+LB 0x060a1118 aud_WritePacketTail CONFIRM aud_WritePacketTail name matches body
+LB 0x060a1180 aud_UpdateChannelSwitch CONFIRM aud_UpdateChannelSwitch name matches body
+LB 0x060a1200 aud_InitBuffers RENAME aud_Init does full sound driver init, called at video init
+LB 0x060a1292 aud_SetBuffers CONFIRM aud_SetBuffers name matches body
+LB 0x060a12be aud_EnqueueByte CONFIRM aud_EnqueueByte name matches body
+LB 0x060a1384 aud_AdvanceCounter CONFIRM aud_AdvanceCounter name matches body
+LB 0x060a13ac aud_DecodeNibbleStream CONFIRM aud_DecodeNibbleStream name matches body
+LB 0x060a144c aud_FillBuffersBoth CONFIRM aud_FillBuffersBoth name matches body
+LB 0x060a14ae aud_FillBuffersActive CONFIRM aud_FillBuffersActive name matches body
+LB 0x060a1524 aud_ProcessQueue CONFIRM aud_ProcessQueue name matches body
+LB 0x060a15e0 aud_ProcessQueueLocked CONFIRM aud_ProcessQueueLocked name matches body
+LB 0x060a1664 aud_SendPacket CONFIRM aud_SendPacket name matches body
+LB 0x060a16c6 aud_SetCtrlBit1 CONFIRM aud_SetCtrlBit1 name matches body
+LB 0x060a1706 aud_SetModeBits4_5 CONFIRM aud_SetModeBits4_5 name matches body
+LB 0x060a1744 aud_SetModeBits6_7 CONFIRM aud_SetModeBits6_7 name matches body
+LB 0x060a18d0 aud_RunCommand CONFIRM aud_RunCommand name matches body
+LB 0x060a1e54 table_DecodeLookup RENAME table_SinLookup paired with cos variant, angle table lookup
+LB 0x060a1e78 table_DecodeLookup_2 RENAME table_CosLookup second table base offset 90 degrees from first
+LB 0x060a1e9c table_LookupPair CONFIRM table_LookupPair name matches body
+LB 0x060a5f74 table_DecodeSwitch RENAME table_TanLookup scaled lookup used in fov and distance code
+LB 0x060a80d0 math_DivuSetup RENAME math_Atan2 sorts abs values, octant constants
+LB 0x060aa22c sgl_LookAt CONFIRM sgl_LookAt name matches body
+LB 0x060aa2f4 sgl_CalcPointTable CONFIRM sgl_CalcPointTable name matches body
+LB 0x060aa320 sgl_RotMatrixZ CONFIRM sgl_RotMatrixZ name matches body
+LB 0x060aa398 sgl_RotMatrixY_entry CONFIRM sgl_RotMatrixY_entry name matches body
+LB 0x060aa3a2 sgl_RotMatrixY CONFIRM sgl_RotMatrixY name matches body
+LB 0x060aa410 sgl_RotMatrixX_entry CONFIRM sgl_RotMatrixX_entry name matches body
+LB 0x060aa41a sgl_RotMatrixX CONFIRM sgl_RotMatrixX name matches body
+LB 0x060aa4a6 sgl_SetUnitMatrix CONFIRM sgl_SetUnitMatrix name matches body
+LB 0x060aa8fc sgl_SetMatrixTransposed CONFIRM sgl_SetMatrixTransposed name matches body
+LB 0x060aa918 sgl_GetMatrixTransposed CONFIRM sgl_GetMatrixTransposed name matches body
+LB 0x060aa95c sgl_MulMatrix CONFIRM sgl_MulMatrix name matches body
+LB 0x060aaa68 sgl_TranslateMac CONFIRM sgl_TranslateMac name matches body
+LB 0x060aab44 sgl_SetScaleMatrix RENAME sgl_SetRotIdentity writes identity 3x3 rotation block
+LB 0x060aab98 sgl_MulVecMac3 CONFIRM sgl_MulVecMac3 name matches body
+LB 0x060aabbc sgl_SetTvMode CONFIRM sgl_SetTvMode name matches body
+LB 0x060aacdc sgl_Unpack2bppTo16bit CONFIRM sgl_Unpack2bppTo16bit name matches body
+LB 0x060aad0c sgl_Unpack4bppTo16bit CONFIRM sgl_Unpack4bppTo16bit name matches body
+LB 0x060aad3c dmac_StartCh0CopyWide CONFIRM dmac_StartCh0CopyWide name matches body
+LB 0x060ab85c vdp2_SetMapAddrNbg0 CONFIRM vdp2_SetMapAddrNbg0 name matches body
+LB 0x060ab9c0 vdp2_SetMapAddrNbg1 CONFIRM vdp2_SetMapAddrNbg1 name matches body
+LB 0x060abb24 vdp2_LoadColorTable8Tail CONFIRM vdp2_LoadColorTable8Tail name matches body
+LB 0x060abb3e vdp2_LoadColorTable8 CONFIRM vdp2_LoadColorTable8 name matches body
+LB 0x060abc04 vdp2_SetCharSizeAndOffset CONFIRM vdp2_SetCharSizeAndOffset name matches body
+LB 0x060abe94 vdp2_SetWindow0 CONFIRM vdp2_SetWindow0 name matches body
+LB 0x060abeb0 vdp2_SetWindow1 CONFIRM vdp2_SetWindow1 name matches body
+LB 0x060abf78 sgl_InitZTable CONFIRM sgl_InitZTable name matches body
+LB 0x060abff8 sgl_UpdateScrollParam CONFIRM sgl_UpdateScrollParam name matches body
+LB 0x060ac2b6 vdp2_SetMapOffsetNbg3 CONFIRM vdp2_SetMapOffsetNbg3 name matches body
+LB 0x060ac2d4 vdp2_SetMapOffsetNbg2 CONFIRM vdp2_SetMapOffsetNbg2 name matches body
+LB 0x060ac2e8 vdp2_SetMapOffsetNbg1 CONFIRM vdp2_SetMapOffsetNbg1 name matches body
+LB 0x060ac378 sgl_QueueSetFov CONFIRM sgl_QueueSetFov name matches body
+LB 0x060ac414 sgl_PutPolygonSprite UNSURE sgl_PutPolygonSprite looks like clip setter, unclear
+LB 0x060ac504 sgl_QueueEndMark CONFIRM sgl_QueueEndMark name matches body
+LB 0x060ac57c sgl_QueueSpriteBlock CONFIRM sgl_QueueSpriteBlock name matches body
+LB 0x060ac628 sgl_BuildSpriteCommand CONFIRM sgl_BuildSpriteCommand name matches body
+LB 0x060ac6fc sgl_CheckSpriteDepth CONFIRM sgl_CheckSpriteDepth name matches body
+LB 0x060ac73c sgl_SetSpriteClipOrigin CONFIRM sgl_SetSpriteClipOrigin name matches body
+LB 0x060ac78c dmac_StartCh0Auto CONFIRM dmac_StartCh0Auto name matches body
+LB 0x060acf60 smpc_WaitVblankSetup CONFIRM smpc_WaitVblankSetup name matches body
+LB 0x060acf7a smpc_PollPeripherals RENAME sgl_FrameSync per-frame queue, pad scan, wait, work area reset
+LB 0x060ad08e smpc_ScanPads RENAME sgl_KickTransferSlots same 8x0x14 slot table as slot processor, no SMPC or pad access, fires queued transfer then DMA setup
+LB 0x060ad14a smpc_UpdatePadMask RENAME sgl_ClearSlotBusyBit clears per-slot bit in mask zeroed with slot table at init, no pad data
+LB 0x060ad324 smpc_IssueCommandSeq RENAME snd_InitDriver SNDOFF cmd 7 then DMA driver then SNDON cmd 6, caller loads sound driver
+LB 0x060ad490 scsp_WriteVolumeReg RENAME scsp_SetMasterVolume 4-bit nibble from 0x7f at driver load fits MVOL
+LB 0x060ad4be scsp_WriteCmd86 CONFIRM scsp_WriteCmd86 mailbox write cmd 0x86 with byte param, used before pcm stop
+LB 0x060ad4c4 scsp_WriteCmd08 RENAME scsp_SelectBank called with bank index in bank request before table load
+LB 0x060ad548 scsp_PlayChannel CONFIRM scsp_PlayChannel picks free channel and builds play cmd, called by SE and menu code
+LB 0x060ad5f8 scsp_WriteCmd02 RENAME scsp_StopChannel called with 0..3 in stop loop and on stop command word
+LB 0x060ad62c scsp_SetPlayParams CONFIRM scsp_SetPlayParams mailbox block cmd 5 with param words, weak evidence
+LB 0x060ad684 scsp_WriteCmd02Hi CONFIRM scsp_WriteCmd02Hi equals cmd 2 with zero param, called in hardware init
+LB 0x060ad6ac scsp_WriteCmd87 CONFIRM scsp_WriteCmd87 mailbox cmd 0x87 with two packed bytes
+LB 0x060ad6d4 scsp_SetPanVolume CONFIRM scsp_SetPanVolume callers are cd audio fade and play, 5-bit level and pan fields
+LB 0x060ad730 scsp_ClearCmd80 CONFIRM scsp_ClearCmd80 zero-param cmd 0x80 called by cdda stop
+LB 0x060ad754 scsp_CopyCmdBlock CONFIRM scsp_CopyCmdBlock copies 13-byte block into mailbox then triggers
+LB 0x060ad780 sgl_MatrixToAngles RENAME sgl_InvertCurrentMatrix pivot by abs max, row swap, uses SH2 divider reciprocal, no atan
+LB 0x060adb44 vdp2_SetMapAddrNbg2 CONFIRM vdp2_SetMapAddrNbg2 writes map offset nibble and 8 map regs at 0x110 shadow
+LB 0x060adc18 vdp2_SetMapAddrNbg3 CONFIRM vdp2_SetMapAddrNbg3 same for NBG3 high nibble and regs at 0x120
+LB 0x060adcb8 sgl_InitVdpDisplay CONFIRM sgl_InitVdpDisplay sets cmd list pointers and display mode from mode param
+LB 0x060adf02 sgl_ClipSpriteRect CONFIRM sgl_ClipSpriteRect tests quad corners against clip bounds and flips cmd bits
+LB 0x060ae29c dmac_StartCh0Sized CONFIRM dmac_StartCh0Sized SH2 DMAC ch0 SAR DAR TCR by unit size
+LB 0x060ae65c sgl_SetFrameInterval CONFIRM sgl_SetFrameInterval stores interval byte pair at GBR+0x12 plus init of vectors and slots
+LB 0x060ae724 smpc_SwitchPeripheralReport RENAME sgl_ProcessTransferSlots loops 8 slots switch on type, queues DMA via sgl_QueueDmaTransfer
+LB 0x060ae950 sgl_QueueDmaTransfer CONFIRM sgl_QueueDmaTransfer uses DMAC ch1 or descriptor queue entry
+LB 0x060aeac8 sgl_InstallVblankHandler UNSURE sgl_InstallVblankHandler stores handler pointer but vector role not shown

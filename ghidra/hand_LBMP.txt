@@ -1,0 +1,276 @@
+0x0600f554 func sys_InitVideoMode hand masks mode param, calls many init helpers, sets flags
+0x0600f690 func math_Div64Software hand SH-2 software division loop using DIV1-style steps
+0x0600f744 func math_Div64SoftwareSigned hand signed 64 bit software divide returning longlong (was math_Div64Software_2)
+0x0600f9a0 func softfloat_DoubleToInt hand converts double to integer by exponent shift
+0x0600fa2c func softfloat_IntToDouble hand normalizes integer, builds double exponent and mantissa
+0x0600fc74 func softfloat_Wrapper hand thin wrapper calling helper at 06037364
+0x0600fccc func strlen hand counts bytes until zero
+0x0600fd88 func bits_InsertField hand builds mask from r1 widths by loops and merges field of r0
+0x0600fdf0 func math_Div32Software hand SH-2 software unsigned divide with DIV1 steps
+0x0600fe98 func math_Div32SoftwareLong hand unsigned divide returning longlong, zero divisor stores constant (was math_Div32Software_2)
+0x06013820 func math_ShiftLeftTable hand dispatches shift via jump table when shift count below 32
+0x06020edc func sgl_SetTvMode hand stores TV mode index, selects tables, SH-2 DMAC copies of 0x30 words, sets work area fields
+0x06020ffc func sgl_Unpack2bppTo16bit hand expands 2-bit pixels to 16-bit words with palette offset into param_3
+0x0602102c func sgl_Unpack4bppTo16bit hand expands 4-bit pixels to 16-bit words with palette offset into param_3
+0x0602105c func dmac_StartCh0CopyWide hand waits DMAC CHCR0, programs SAR/DAR/TCR, sets 0x1000100 in dest, starts DMA
+0x060210c0 func dmac_StartCh0Copy hand waits DMAC CHCR0 idle, writes SAR/DAR/TCR at 0xffffff80.., starts transfer DMAOR 9
+0x0602135c func sgl_CopyInitTable8 hand copies 8 words from constant table into work area
+0x06021aac func vdp2_SetFlagBitC0 hand ORs mask into 16-bit word at GBR+0xc0
+0x06021ab6 func vdp2_ClearFlagBitsC0 hand ANDs word at GBR+0xc0 with mask and mirrors to register copy
+0x06021acc func vdp2_SetFieldCeHi hand sets upper nibble field of GBR+0xce shadow and writes register copy
+0x06021aec func vdp2_SetFourWords hand stores four args into two 4-word tables (shadow and register copy)
+0x06021b0c func vdp2_SetPlaneAddrE8 hand merges args into shadow word GBR+0xe8, stores address at 0x1fc and nibble at 0xfd
+0x06021b54 func vdp2_SetBitsE0 hand sets low-half bits and clears high-half bits of word GBR+0xe0
+0x06021f6c func vdp2_SetPatternBase16c hand stores value to param_1 and param_1>>1 into GBR+0x16c
+0x06021f78 func vdp2_SetMapAddrNbg0 hand stores address at 0x1fc, computes shift by size flags, derives map offset fields
+0x06022028 func vdp2_SetPair138 hand stores two words at GBR+0x138/0x13c
+0x06022034 func vdp2_SetPair148 hand stores two words at GBR+0x148/0x14c
+0x06022040 func vdp2_SetFieldFb0 hand sets low 2 bits of byte GBR+0xfb
+0x06022058 func vdp2_SetField1a0Lo hand sets low nibble of word GBR+0x1a0
+0x06022064 func vdp2_SetBit1a0b5 hand sets bit 5 of word GBR+0x1a0
+0x06022078 func vdp2_SetPair130 hand stores two words at GBR+0x130/0x134
+0x060220ac func vdp2_SetPair140 hand stores two words at GBR+0x140/0x144
+0x060220c4 func vdp2_SetField1a4Lo hand sets low nibble of word GBR+0x1a4
+0x060220d0 func vdp2_SetField1a6b4 hand sets bits at shift 4 of word GBR+0x1a6
+0x060220e4 func gfx_Expand1bppTo4bpp hand expands 1bpp font rows to 4bpp pixel words with color nibble, nested loops
+0x06022140 func vdp2_SetCycleE9 hand stores OR of args at GBR+0xe9 then calls FUN_060ac334 update
+0x060221b8 func vdp2_SetMapOffsetNbg1 hand stores address at +4, builds map offset word at +0x30
+0x06022204 func vdp2_WriteMapByte hand writes map offset low bits from table into register byte pair
+0x060223b4 func smpc_SendCommand hand waits SF bit clear, sets SF, writes command byte to COMREG, waits completion
+0x06022558 func aud_LockAcquire hand sets bit7 in lock byte, returns 0 if free else -1
+0x06022562 func aud_LockRelease hand clears lock byte, returns param
+0x06022580 func aud_SetVolumeA hand under lock sets value A (7 bits) in shadow and register
+0x060225aa func aud_SetVolumeB hand under lock sets value B (7 bits) in shadow and register
+0x06022610 func aud_IsFlagBit0Clear hand tests bit0 clear in control byte
+0x0602261a func aud_IsFlagBit1Clear hand tests bit1 clear in control byte
+0x06022624 func aud_SetFlagBit0 hand locked set or toggle bit0 in control byte
+0x06022658 func aud_SetFlagBit1 hand locked set or toggle bit1 in control byte
+0x06022694 func aud_IsFlag2Bit0Clear hand tests bit0 clear in second control byte
+0x0602269e func aud_IsFlag2Bit1Clear hand tests bit1 clear in second control byte
+0x060226a8 func aud_SetFlag2Bit0 hand locked set or toggle bit0 in second control byte
+0x060226d8 func aud_SetFlag2Bit1 hand locked set or toggle bit1 in second control byte
+0x06022710 func aud_GetTableEntry hand returns address of 4-byte table entry by index
+0x06022764 func aud_CheckBothIdle hand returns 0 if both channels idle else -1
+0x060227a6 func aud_CheckEitherActive hand provisional: returns 0 if either channel flag set else -1
+0x060227c4 func aud_MergeStatusBits hand ORs status bits 0x30 and 0xffffffc0 by channel flags
+0x060227e4 func aud_WritePacketTail hand appends 7 byte packet to buffer, bytes 0xf1 0x25 and param
+0x0602284c func aud_UpdateChannelSwitch hand toggles channel flags and writes packet by current index 0/1
+0x060228b4 func aud_ClearRing30 hand fills 30 entries with 0xff at stride, returns -1
+0x060228cc func aud_Init hand sets buffer pointers and stride, clears state variables (was aud_InitBuffers)
+0x0602295e func aud_SetBuffers hand under lock stores buffer pointers and stride, clears ring
+0x0602298a func aud_EnqueueByte hand pushes byte into 32 entry ring buffer, returns -1 if full
+0x060229de func aud_TestStatusBit4 hand tests status bit mask 4, returns 0 if set else -1
+0x060229ea func aud_TestStatusBit2 hand tests status bit mask 2, returns 0 if set else -1
+0x06022a16 func aud_SetStatusBit2 hand sets bit mask 2 in status byte
+0x06022a50 func aud_AdvanceCounter hand cycles counter 0..2 when flag 0x10 set, sets status bit0
+0x06022a78 func aud_DecodeNibbleStream hand reads nibbles from stream, dispatches handler table, counts entries
+0x06022b18 func aud_FillBuffersBoth hand decodes two buffers unless channel bits masked
+0x06022b7a func aud_FillBuffersActive hand decodes buffers for channels whose flags are clear
+0x06022cac func aud_ProcessQueueLocked hand locked variant draining queue then advancing counter
+0x06022d30 func aud_SendPacket hand waits bit0 busy, calls handler by type byte, writes data byte
+0x06022d92 func aud_SetCtrlBit1 hand locked set or toggle bit mask 2 in control byte
+0x06022dd2 func aud_SetModeBits4_5 hand locked set bits 4-5 of control byte, reject 2 or above 3
+0x06022e10 func aud_SetModeBits6_7 hand locked set bits 6-7 of control byte, reject 2 or above 3
+0x06022f9c func aud_RunCommand hand validates index up to 0x10, runs command handler from table by type
+0x06023520 func smpc_WaitVblankSetup hand waits status bit 2, sets frame counter, queues command 4/0x2c
+0x0602353a func sgl_FrameSync hand queues command, calls rand, peripheral scan and wait routines, loops via vector at 0x3cc (was smpc_PollPeripherals)
+0x06023630 func math_RandomStep hand LCG update of seed at GBR+0x33c, returns rounded high half
+0x0602364e func sgl_KickTransferSlots hand loops eight pad slots, calls FUN_060ad14a for type p, fills per-pad data (was smpc_ScanPads)
+0x060236a6 func smpc_WaitCommandDone hand polls SMPC status byte with delay loops, writes DMAC-style value 0x30 delay
+0x0602370a func sgl_ClearSlotBusyBit hand computes bit position from port index and clears bit in mask at GBR+0xb2 (was smpc_UpdatePadMask)
+0x060238c4 func sgl_SetUserCallback14 hand stores callback pointer at GBR+0x14, default to stub label if null
+0x060238d4 func sgl_SetUserCallback3cc hand stores callback pointer at GBR+0x3cc, default to stub label if null
+0x06023de4 func sgl_InitVdpDisplay hand sets command queue pointers, masks mode param to 5 bits, writes display mode registers
+0x06023f18 func dmac_StartCh0Sized hand size-dependent transfer unit select, writes SAR/DAR/TCR, align mask by size
+0x06023fb8 func dmac_WaitCh0 hand spins until DMAC ch0 CHCR transfer-in-progress clears, returns status
+0x06024034 func pad_InitEdgeState hand sets three halfwords at +2,+4,+6 to 0xffff
+0x0602403e func pad_UpdateEdges hand computes press and release edge masks from new and previous state, stores state
+0x060243b6 func pad_InitEdgeStateAdv hand stores byte then inits edge state, returns advanced pointer
+0x06024666 func dmac_StartCh1Copy hand waits DMAC ch1 CHCR idle, writes SAR/DAR/TCR at 0xffffff90.., starts transfer DMAOR 9
+0x06024824 func sgl_SetFrameInterval hand sign flag into 0xb0 bit7, clamps value, stores interval at GBR+0x12
+0x060248ec func sgl_ProcessTransferSlots hand loops eight entries with switch on peripheral type, dispatches by masked byte (was smpc_SwitchPeripheralReport)
+0x06024b18 func sgl_QueueDmaTransfer hand waits queue slot, fills DMA descriptor with address and length, 7 flag
+0x06024b6e func sgl_WaitDmaFlag hand spins with delay loop until bit 2 of byte GBR+0xbd set, returns 0x30
+0x06024c90 func sgl_InstallVblankHandler hand provisional: clears flag, registers handler via two vector-setup calls with 2,1 and 1,0
+0x06024de0 func mem_Clear512 hand zeroes 512 bytes (64 double-words) at register-passed pointer
+0x06024df2 func gfx_BuildRampTables hand builds three 32x32 clamped 0..31 gradient byte tables and 32-entry short step table
+0x06025094 func sh2_EnableCache hand writes 0x11 to cache control register 0xfffffe92 enabling cache
+0x0602b6d4 func buf_CopyStridedBytes hand copies 1+7+4+4 bytes with stride 2 from source into work buffer
+0x0602b710 func buf_AppendStridedBytes32 hand appends 32 bytes stride-2 into ring buffer if below limit; updates fill index
+0x0602bd2c func obj_LinkNodeFromTemplate provisional gbr-based node setup linking into hashed list by high byte, copies fields
+0x0600d300 func crt_EntryCacheInit hand provisional program entry: sets up cache and stack, clears bss, jumps to main
+0x0600d590 func crt_ClearBss hand zero-fills bss word range between linker symbols before main
+0x0600d5ba func sys_ClearFlag hand provisional writes zero to a global flag byte and returns
+0x0600d600 func vdp2_FillPlaneMapFromAddr hand provisional fills VDP2 page map entries from a base address, incrementing per cell
+0x0600d64c func mem_ClearWords hand zero-fills a word buffer given pointer and count
+0x0600d662 func pad_CheckMovieSkip hand reads pad state, returns true when start button pressed to skip movie
+0x0600d6fc func movie_PlayLoopDouble hand provisional movie playback loop, double-scaled frame blit, polls pad skip and audio stream
+0x0600d9e2 func movie_PlayLoopLinear hand provisional movie playback loop, linear unscaled frame blit, polls pad skip each frame
+0x0600dd54 func movie_OpenStream hand provisional opens AVI stream, allocates video and audio contexts for playback
+0x0600de4c func movie_PlayFile hand provisional top-level play of one movie file: open, loop, close, restore VDP2
+0x0600dfe0 func vdp2_ClearBanksSetMode hand provisional clears VDP2 VRAM banks and sets screen mode registers
+0x0600e036 func aud_WaitIdleCommand2 hand provisional waits for sound driver idle then runs aud_RunCommand command 2
+0x0600e05a func aud_SaveStateAndRunCmd1 hand provisional saves sound state and runs aud_RunCommand command 1
+0x0600e09a func aud_SendWordWait hand provisional sends one word to sound driver mailbox and waits for ack
+0x0600e1d0 func aud_SplitHalfword hand splits a 16-bit value into two bytes for sound command parameters
+0x0600e1ea func aud_FeedStreamBuffer hand provisional pushes decoded PCM into sound RAM ring buffer for CD audio stream
+0x0600e282 func aud_ResetStreamCounters hand clears stream position and fill counters for the audio ring buffer
+0x0600e2b0 func aud_UpdateStreamTiming hand provisional recomputes stream timing and sample counters from elapsed frames
+0x0600e482 func aud_InitStream hand provisional initializes audio stream state, sample rate and buffer pointers
+0x0600e510 func aud_OpenStreamFile hand provisional opens audio stream file via cd calls and prepares ring buffer
+0x0600e690 func aud_CallStopIfActive hand calls sound stop routine when stream active flag is set
+0x0600e6b2 func aud_CallStopIfActive_2 hand variant of stop call for second channel when its active flag is set
+0x0600e6ee func aud_StartStream hand provisional starts audio stream playback by sending sound driver start command
+0x0600e7d8 func aud_CloseStream hand provisional stops stream and closes its file, clears stream state
+0x0600e84c func cd_WaitTransferDone hand polls CD transfer state until finished
+0x0600e886 func cd_OpenFileByName hand provisional opens a CD file by name through cd call and returns handle
+0x0600e8aa func cd_OpenAndTail hand provisional opens CD file then calls tail handler for setup
+0x0600e8da func cd_ChangeDirMovie hand provisional changes CD directory using string MOVIE
+0x0600e9b0 func cd_SeekIfPositive hand seeks CD file only when position argument is positive
+0x0600e9d8 func cd_CloseFileSeek hand provisional closes CD file and resets seek position
+0x0600ea02 func movie_OpenPlaylistEntry hand provisional builds filename from strings PLAYALL_AVI and PLAYONCE_AVI and opens it
+0x0600ebd0 func cd_Tail hand tail-call wrapper forwarding args to CD routine
+0x0600ebe6 func cd_ReadBytes hand provisional reads requested byte count from CD file into buffer
+0x0600ee38 func cd_Seek hand provisional seeks CD file by sector or byte offset, whence argument
+0x0600efbc func vdp2_BlitTileData hand provisional copies tile character data into VDP2 VRAM by rows
+0x0600f056 func cd_FindFileUppercase hand provisional uppercases name then finds file entry in CD directory
+0x0600f098 func cd_LoadFileToVram hand provisional loads a named CD file into VDP2 VRAM, calls cd_OpenFileByName
+0x0600f128 func vdp2_SetupLoadScreen hand provisional configures VDP2 registers for full-screen bitmap load screen
+0x0600f17e func scr_ShowMovieScreen hand provisional loads string DT_MOVIE_BIN image and displays it as movie backdrop
+0x0600f248 func scr_ShowLoadScreen hand provisional loads string DT_LOAD_BIN image and displays loading screen
+0x0600f2c8 func gfx_RemapNibbles1 hand provisional remaps 4-bit pixel nibbles through lookup table, variant one
+0x0600f316 func gfx_RemapNibbles2 hand provisional remaps 4-bit pixel nibbles through lookup table, variant two
+0x0600f35c func mem_Clear32Bytes hand zeroes 32-byte block at pointer
+0x0600f374 func font_Init hand provisional sets up font tables and gfx_Expand1bppTo4bpp glyph cells
+0x0600f418 func text_InitCharCells hand provisional initializes VDP2 character cell area for text rows
+0x0600f460 func text_ClearLine hand provisional clears one text row of character cells
+0x0600f4a8 func text_DrawCenteredLine hand provisional draws a string centered on a text row
+0x0600f510 func text_AdvanceIfLine hand provisional advances current text line when line counter condition holds
+0x0600f900 func stub_0600f900 hand compiler shift helper stub, shifts value by fixed count and returns
+0x0600f90c func stub_0600f90c hand compiler shift helper stub, shifts value by fixed count and returns
+0x0600f958 func memmove hand C runtime memmove, copies forward or backward by overlap direction
+0x0600fb12 func softfloat_ReturnInf hand softfloat helper returning infinity bit pattern
+0x0600fb1a func softfloat_ReturnNaN hand softfloat helper returning NaN bit pattern
+0x0600fb24 func softfloat_DoubleMul hand provisional softfloat double precision multiply using 64-bit partial products
+0x0600fc88 func strcspn hand C runtime strcspn, length of prefix without any reject characters
+0x0600fcdc func strncpy hand C runtime strncpy, copies up to n bytes padding with zeros
+0x0600fd18 func strstr hand C runtime strstr, finds substring occurrence in string
+0x0600ff50 func strcmp hand C runtime strcmp, compares two strings bytewise
+0x0600ffb4 func strncmp hand C runtime strncmp, compares at most n bytes of two strings
+0x0600fff0 func memset hand C runtime memset, fills n bytes with value
+0x0601000c func math_ByteSwap32 hand swaps byte order of 32-bit value for little-endian AVI fields
+0x06010014 func math_ByteSwap16Lo hand swaps byte order of low 16-bit halfword
+0x060106e0 func gfx_ConvertYuvBlocks hand provisional converts YUV macroblocks to RGB pixels through lookup tables
+0x06012918 func gfx_DispatchByMode hand provisional selects blit routine by color mode and calls it
+0x06012e24 func gfx_SetSrcPtr hand stores source pixel pointer into blit state
+0x06012e2c func gfx_SetBlitParams hand stores width, height and stride into blit state
+0x06012e54 func gfx_BlitRows hand provisional blits decoded rows to destination using lookup table per pixel pair
+0x06012fa0 func gfx_DispatchTable hand provisional dispatches through function table by mode index to blit routine
+0x06013490 func gfx_SetBlitParams2 hand second parameter setter for blit state, dither variant
+0x060134b0 func gfx_BlitRowsDither hand provisional blits rows with ordered dither pattern into destination
+0x0601378c func strcmp_aligned hand provisional word-aligned fast string compare variant
+0x060138c0 func adpcm_DecodeStereoNibbles hand provisional decodes ADPCM stereo nibbles with step table to 16-bit PCM
+0x06013a84 func adpcm_DecodeMono hand provisional decodes mono ADPCM nibbles with step and index tables
+0x06013b3c func adpcm_DecodeStereoSplit hand provisional decodes ADPCM stereo into separate left and right buffers
+0x06021b30 func pad_SetPortModeA hand provisional sets peripheral port mode register values via SMPC
+0x06021b64 func pad_BuildReport hand provisional builds pad report buffer from peripheral data
+0x06021e98 func pad_FillEntryX hand provisional fills one pad data entry from raw peripheral bytes, variant X
+0x06021ed0 func pad_FillEntryY hand provisional fills one pad data entry from raw peripheral bytes, variant Y
+0x06021f02 func pad_FillEntryZ hand provisional fills one pad data entry from raw peripheral bytes, variant Z
+0x0602204c func io_WriteByteReg hand provisional writes one byte to hardware register address
+0x060220b8 func io_WriteByteReg_2 hand provisional second byte register write variant
+0x06022248 func dmac_StartCh0Copy_2 hand starts SH-2 DMAC channel 0 memory copy with source, dest, count
+0x060222cc func smpc_InitSlaveSetup hand provisional sets up SMPC slave and peripheral control registers
+0x060223d0 func smpc_WaitBusy hand polls SMPC status flag SF until command finished
+0x060223e8 func smpc_FlushQueue hand provisional drains queued SMPC command packets
+0x0602249c func smpc_SendCommand82 hand sends SMPC command with parameter 0x82 via smpc_SendCommand
+0x060224b8 func smpc_QueuePacket hand provisional queues a command packet for later SMPC send
+0x060224f0 func smpc_BuildFormat hand provisional builds SMPC IREG parameter bytes for a command format
+0x06022570 func aud_ReadRegMask1 hand reads sound register and masks bits, variant one
+0x06022578 func aud_ReadRegMask2 hand reads sound register and masks bits, variant two
+0x060225e4 func aud_ReadRegMask3 hand reads sound register and masks bits, variant three
+0x060225ec func aud_ReadRegMask4 hand reads sound register and masks bits, variant four
+0x06022bf0 func aud_UpdateSoundBuffers hand provisional refreshes sound buffer pointers and levels for audio output
+0x060238e4 func math_InitIdentityMatrix hand writes identity 3x3 fixed-point matrix into buffer
+0x0602400a func aud_WaitStatusReady hand polls sound status register until ready bit set
+0x0602b614 func vdp1_SendCommand hand provisional writes command table entry to VDP1 VRAM
+0x0602c1d8 func mem_Calloc hand allocates n times size bytes and zero-fills
+0x0602c218 func mem_Free hand frees heap block, merging with neighbours
+0x0602c290 func mem_InitHeap hand initializes heap start and end pointers
+0x0602c2b0 func mem_Alloc hand heap first-fit allocator returning block pointer
+0x0602c31c func stream_InitPools hand provisional allocates stream, track and buffer pools
+0x0602c3ec func stream_FreePools hand frees stream pools allocated by stream_InitPools
+0x0602c440 func stream_AllocSlot hand provisional finds free stream slot in pool and marks used
+0x0602c4b4 func stream_OpenFile hand provisional opens stream file into free slot
+0x0602c504 func stream_CloseFile hand closes stream file and releases slot
+0x0602c52a func stream_SyncTrackPos hand provisional syncs track position with file read position
+0x0602c57e func stream_AllocTrack hand provisional allocates track descriptor and reads its header
+0x0602c6d0 func stream_FreeTrack hand frees track descriptor
+0x0602c710 func stream_AllocBuffer hand provisional allocates stream data buffer of requested size
+0x0602c784 func stream_FreeBuffer hand frees stream data buffer
+0x0602c7b0 func stream_ResetBuffer hand resets buffer read and write positions
+0x0602c804 func math_DivWrapper hand wrapper around hardware divide, returns quotient
+0x0602c82a func stream_CalcBlockSize hand provisional computes block size from rate and format fields
+0x0602c8e8 func stream_RewindTable hand provisional rewinds chunk table to start for restart or loop
+0x0602ca0c func stream_Start hand provisional starts stream, sets up chunk table and first reads
+0x0602cd3e func stream_ReadAhead hand provisional reads ahead next chunks into buffers
+0x0602d090 func stream_Update hand provisional per-frame stream update, refill buffers and advance chunks
+0x0602d200 func stream_FindNextChunk hand scans chunk table for next unfinished chunk
+0x0602d336 func stream_MarkChunkDone hand marks chunk as consumed
+0x0602d354 func stream_CountChunks hand counts remaining chunks in table
+0x0602d400 func stream_GetFormatInfo hand returns format fields for stream track
+0x0602d466 func stream_GetBlockLen hand returns block length field of stream
+0x0602d47e func stream_GetBufferInfo hand returns buffer pointer and size of stream
+0x0602d4fc func avi_ParseChunk hand provisional parses one AVI RIFF chunk by fourcc and dispatches
+0x0602d8c4 func avi_ParseChunkList hand provisional iterates sub-chunks of an AVI LIST chunk
+0x0602d92e func avi_ReadChunkHeader hand reads AVI chunk fourcc and size, byte-swapped
+0x0602da9c func avi_ReadNextFrame hand provisional reads next video frame chunk into buffer
+0x0602dafa func avi_ParseHeader hand provisional parses AVI main header and stream headers
+0x0602dbe6 func avi_Close hand closes AVI file and frees its stream resources
+0x0602dc38 func gfx_BlitFrameStrips hand provisional blits decoded frame to screen in strips
+0x0602dd30 func gfx_BlitFrame hand provisional blits full decoded frame to screen
+0x0602ddac func audio_ConvertPcmToBuffers hand provisional converts PCM samples into output buffers
+0x0602df88 func audio_DecodeToBuffers hand provisional decodes audio chunk with adpcm functions into output buffers
+0x0602e064 func video_AllocContexts hand provisional allocates video player context slots
+0x0602e0f4 func video_FreeSlot38 hand frees video slot with 0x38 size entry
+0x0602e110 func video_FreeSlot hand frees one video context slot
+0x0602e17c func video_FreeAll hand frees all video context slots
+0x0602e1fc func video_SetSizes hand sets frame width and height fields in player
+0x0602e28c func video_AllocPlayer hand provisional allocates player structure and links buffers
+0x0602e310 func video_InitBuffers hand provisional initializes frame and decode buffers of player
+0x0602e490 func video_OpenPlayer hand provisional opens video player for AVI file and sets state
+0x0602e50e func video_SetOffset hand sets display offset fields in player
+0x0602e55a func video_Reopen hand provisional reopens player on same file
+0x0602e5bc func video_SetUserData hand stores user data pointer in player
+0x0602e5dc func video_GetInfo hand provisional copies player frame info into caller struct
+0x0602e676 func video_GetState hand returns player state field
+0x0602e6d0 func video_DecodeFrame hand provisional big frame decode and blit dispatcher using player and target, many function pointers
+0x0602ebc0 func video_CheckReady hand provisional checks player state equals 3 and returns status
+0x0602ec0c func video_SetGlobalCtx hand provisional stores context into global pointers, returns -1 on failure
+0x0602ec88 func video_ClearGlobal hand clears global video context pointer if set
+0x0602ecb8 func strm_ResetChannel hand provisional: init stream channel struct fields (pos, size, flags), computes divisor via math_Div64Software for mode 1
+0x0602ed18 func strm_AllocChannel hand provisional: finds free 0x54-byte slot in channel pool, copies header params, calls strm_ResetChannel; returns slot or 0
+0x0602edbc func strm_FreeChannel hand provisional: marks channel slot free by clearing field at +0x18
+0x0602edc8 func strm_SetBufferParams hand provisional: updates ring buffer start, end, size, mode and count fields of a buffer slot if active
+0x0602ee20 func strm_AllocBuffer hand provisional: finds free 0x20-byte buffer slot in pool, sets mode field, calls strm_SetBufferParams
+0x0602ee90 func strm_FreeBuffer hand provisional: marks buffer slot free by clearing field at +0x18
+0x0602ee9c func strm_LoadIndexTable hand provisional: reads 16-byte records via CD read, parses ASCII digit track numbers and sizes into 8-byte table entries
+0x0602f034 func adpcm_DecodeBlocks hand provisional: decodes ADPCM sample frames from 0x10-byte headers into two output buffers, byte-swapping header fields
+0x0602f194 func adpcm_DecodeMonoStereoChunk hand provisional: reads 3-byte block headers, decodes samples to one or two output buffers with step state
+0x0602f364 func stub_0602f364 hand tiny stub returning 1
+0x0602f368 func stub_CallThunk_0602f368 hand provisional: tiny wrapper calling a single function pointer with no arguments
+0x0602f378 func tbl_InitLinearWordTable hand provisional: fills table of ints with arithmetic progression and sets four global pointers to its base
+0x0602f3c8 func stream_ResetDecoderState hand provisional: writes constant to two byte globals and sets a halfword global to 0xffff
+0x0602f3da func xa_ParseSubheaderInit hand provisional: parses 0x16-byte frame header with XOR deltas, sets channel mode, rate, loads codec tables; negative error codes
+0x0602f7bc func tbl_PackRgb555Pair hand provisional: combines two table-looked-up values times 0x4210000 and 0x421, doubled, packed pixel pair
+0x0602f800 func tbl_PackShortPairShift8 hand provisional: combines two table lookups times 0x100, doubled, packed table entry
+0x0602f818 func tbl_IndexTimes5Plus hand provisional: returns (a*5+b)*2 table byte offset
+0x0602f824 func tbl_PackShortPairShift10 hand provisional: combines two table lookups (second times 0x400) scaled by 0x20002 packed entry
+0x0602f84c func tbl_PackShortPairHigh16 hand provisional: table lookup of b in high 16 bits plus lookup of a, doubled
+0x0602f864 func tbl_PackShortPairShift8_2 hand provisional: combines two table lookups times 0x100 using different table, doubled
+0x0602f87c func tbl_PackShortPairHigh16_2 hand provisional: table lookup of b in high 16 bits plus lookup of a, doubled, other table
+0x0602f8a0 func tbl_SwapQuadrants hand provisional: loop swapping 32-bit entries between table regions at fixed strides, reorders lookup table
+0x0602f94c func tbl_BuildPaletteMap hand provisional: copies 8 channel values, builds three 32-bit lookup tables via packers from nibble pairs, calls tbl_SwapQuadrants
+0x0602fa68 func tbl_BuildPaletteMapExt hand provisional: like tbl_BuildPaletteMap with four param arrays and four packers, builds four tables then tbl_SwapQuadrants
+0x0602fc1c func codec_LoadChannelParams hand provisional: copies eight entries of four arrays into global channel parameter tables, masking and halving first
+0x0602fc90 func codec_UpdateChannelParams hand provisional: compares eight channel entries with globals, copies changed ones, returns changed count

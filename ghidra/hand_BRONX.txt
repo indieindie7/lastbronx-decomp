@@ -1,0 +1,65 @@
+0x06009800 func boot_Entry hand sets cache control register 0xfffffe92 then jumps to boot main
+0x06009828 func boot_Main hand calls boot_InitHw, loads LB.EXE via loader call, jumps into it
+0x0600983e func boot_InitHw hand calls three init routines then zeroes a work RAM block
+0x060098a0 func cd_FindFileByName hand uppercases filename into buffer, GFS name lookup, returns id; provisional
+0x060098e2 func cd_GetFileSectors hand file info query, returns (sectors-1)*size+remainder style length
+0x06009914 func cd_ReadFileRetry hand finds file, reads up to 6 tries with CD status poll, closes; hangs if missing
+0x060099d6 func mem_CopyWords hand copies param_3 longwords from src to dest through global pointers
+0x06009a48 func boot_LoadExecutable hand resets CD/SCU state, reads file into RAM then jumps to loaded program; provisional
+0x06009ae8 func cd_InitDrive hand CD block setup call retry six times, calls hang handler on failure; provisional
+0x0600b4e4 func sync_InitState hand initializes DMAC, channel table, GBR-based state vars and callbacks; provisional
+0x0600b5ac func dma_ProcessChannelQueue hand loops eight 20-byte channel entries, state machine issuing DMA transfers; provisional
+0x0600b7d8 func dma_StartTransfer hand starts SH-2 DMAC channel 0 copy or queues request, handles wrap split; provisional
+0x0600b82e func dma_WaitReady hand busy-waits delay loop until GBR flag bit 4 set
+0x0600b950 func frame_RunSync hand waits flag, runs per-frame callbacks loop, rebuilds vertex offsets from table; provisional
+0x0600b96a func frame_RunSyncNoWait hand same as frame_RunSync without initial wait and flag clear; provisional
+0x0600ba60 func math_RandomNext hand linear congruential generator update, returns rounded high 16 bits
+0x0600ba7e func dma_FlushPendingRequests hand scans eight 20-byte slots with tag 0x70 and starts DMAC copy; provisional
+0x0600bad6 func dma_KickQueuedCopy hand starts DMAC channel 0 transfer of queued buffer when count positive; provisional
+0x0600bb3a func dma_ClearSlotBit hand computes bit from address and clears it in GBR usage mask; provisional
+0x0600bd4e func sys_MaskStatusWord hand ANDs GBR halfword with constant and writes result to hardware register
+0x0600bd64 func smpc_TryLock hand test-and-set lock byte, returns 0 if acquired else -1
+0x0600bd6e func smpc_Unlock hand clears lock byte, returns argument unchanged
+0x0600bd7c func pad_GetPort1Mode hand returns low 7 bits of port 1 setting byte
+0x0600bd84 func pad_GetPort2Mode hand returns low 7 bits of port 2 setting byte
+0x0600bd8c func pad_SetPort1Mode hand locked write of 7-bit port 1 mode to SMPC shadow and register
+0x0600bdb6 func pad_SetPort2Mode hand locked write of 7-bit port 2 mode to SMPC shadow and register
+0x0600bdf0 func pad_GetPort1Id hand returns low 7 bits of port 1 device id byte
+0x0600bdf8 func pad_GetPort2Id hand returns low 7 bits of port 2 device id byte
+0x0600be1c func pad_IsPort1Disabled hand returns true when port 1 flag bit 0 clear
+0x0600be26 func pad_IsPort2Disabled hand returns true when port 2 flag bit 1 clear
+0x0600be30 func pad_SetPort1Enable hand locked toggle of port 1 enable bit in flags byte
+0x0600be64 func pad_SetPort2Enable hand locked toggle of port 2 enable bit in flags byte
+0x0600bea0 func pad_IsPort1Connected hand returns true when bit 0 of second flag byte clear
+0x0600beaa func pad_IsPort2Connected hand returns true when bit 1 of second flag byte clear
+0x0600beb4 func pad_SetPort1Connected hand locked toggle of bit 0 in second flag byte
+0x0600bee4 func pad_SetPort2Connected hand locked toggle of bit 1 in second flag byte
+0x0600bf1c func smpc_GetCommandEntry hand returns table address base plus index*4
+0x0600bf70 func pad_CheckPortsReady hand returns -1 if an enabled port has mode nonzero or not connected, else 0
+0x0600bfb2 func pad_AnyPortEnabled hand returns 0 if either port enabled else -1
+0x0600bfd0 func pad_BuildEnableMask hand ORs 0x30 and 0xffffffc0 into mask for disabled ports
+0x0600bff0 func pad_StoreIdAndData hand writes 7-byte record with 0xf1 0x25 marker, id and port data to buffer
+0x0600c058 func pad_ApplyPortSwap hand per port enable/connect toggles by swap flag, stores ids via pad_StoreIdAndData
+0x0600c0c0 func pad_ClearQueue hand fills 30 entries of strided buffer with 0xff, returns -1
+0x0600c0d8 func pad_InitSystem hand sets buffers, clears pad state tables and queue, resets port modes and flags
+0x0600c16a func pad_SetBuffers hand locked set of pad data buffer pointers and stride, clears queue
+0x0600c196 func pad_PushQueueByte hand pushes byte into 32-entry ring queue if not full, returns 0 or -1
+0x0600c1ea func pad_IsBusyFlag4Clear hand returns -1 if status bit 4 clear else 0
+0x0600c1f6 func pad_IsBusyFlag2Clear hand returns -1 if status bit 2 clear else 0
+0x0600c222 func pad_SetBusyFlag2 hand sets status bit 2 in pad status byte
+0x0600c25c func pad_AdvanceFrameCounter hand on bit-4 event increments counter mod 3 and sets status bit 0
+0x0600c284 func pad_ParsePortData hand decodes 15 nibble-coded pad records via handler table, returns count; provisional
+0x0600c324 func pad_ReadBothPortsFull hand parses both ports' SMPC OREG data via pad_ParsePortData, stores per-port counts
+0x0600c386 func pad_ReadPortsPartial hand parses ports not disabled with pad_ParsePortData, stores per-port counts
+0x0600c3fc func pad_ProcessSmpcFrame hand SMPC peripheral frame: drains command queue, parses pad data, issues SMPC commands
+0x0600c4b8 func pad_DrainCommandQueue hand locked drain of command ring to SMPC executor then frame counter advance
+0x0600c53c func smpc_IssueCommand hand waits SF clear, sets SF, writes command register 0x2010001f via handler table; provisional
+0x0600c59e func pad_SetOptionBit1 hand locked set or toggle bit 1 of option byte
+0x0600c5de func pad_SetPort1Option hand locked store 2-bit option in bits 4-5 of option byte, rejects 2
+0x0600c61c func pad_SetPort2Option hand locked store 2-bit option in bits 6-7 of option byte, rejects 2
+0x0600c7a8 func smpc_ExecCommandChecked hand locked dispatch SMPC command id up to 16 via jump table with enable checks; provisional
+0x0600cd2c func smpc_CopyOregBytes hand copies alternating bytes from SMPC OREG into packed status buffer
+0x0600cd68 func smpc_AppendOregBytes hand appends 32 alternating OREG bytes into buffer if space remains
+0x0600ce1c func pad_ResetEdgeState hand sets three halfwords at offset 2,4,6 to 0xffff
+0x0600ce26 func pad_UpdateEdges hand computes press/release edge masks from new and previous halfword
+0x0600d19e func mem_CopyByteThenReset hand copies one byte and calls pad_ResetEdgeState on next address

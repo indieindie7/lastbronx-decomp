@@ -1,0 +1,1164 @@
+0x0600d300 func boot_Entry hand sets cache control register 0xfffffe92 to 0x11 then jumps to init pointer
+0x0600d328 func sys_InitHardware hand calls chain of init routines, clears flags, sets video/sound defaults
+0x0600d39e func sys_InitMode3 hand runs sys_InitHardware then sets mode variable to 3
+0x0600d3ae func sys_InitModeReset hand runs sys_InitHardware, extra call, sets mode variable to 0
+0x0600d3c4 func pad_CheckResetCombo hand loops two pads for button combo mask, triggers soft reset via sys_InitModeReset
+0x0600d4a4 func main_Loop hand clears work RAM, inits, endless loop calling per-frame tasks and mode dispatch table by index
+0x0600d540 func main_ClearModeState hand zeroes mode index, substate and frame counter
+0x0600d598 func main_InitSystemSgl hand sequence of SGL-style init calls then tail-calls final setup
+0x0600d85e func save_InitOrLoadSettings hand first run zeroes settings struct and sets defaults, else copies saved block
+0x0600d8a8 func game_StartFromSetupState hand starts game mode by selected setup type, calls sys_InitMode3, sets mode ids
+0x0600d95e func game_StoreMatchSetup hand fills setup struct from player selections and bytes, copies table block
+0x0600da2c func script_RunStepTable hand runs table of step function pointers, advances index by step return code 0-3
+0x0600dace func event_QueueAdd hand adds id/value pair to 16-entry 8-byte queue, or clears queue when id is 0
+0x0600db40 func event_QueueSetOrAdd hand finds existing id in queue and updates its value, else adds via event_QueueAdd
+0x0600dbc4 func gfx_BeginDataBlockLoad hand stores result of allocation-like call into work pointer, returns 1 (was mem_SetWorkPtrFromCall)
+0x0600dbd8 func gfx_CopyDataBlockToVram hand if call succeeds copies sized data block and palette to VRAM via DMA-like calls
+0x0600dc26 func vdp1_DrawTileMapSprites hand reads tile map header and emits VDP1 command per non-negative 8x16 tile
+0x0600dccc func vdp1_DrawTileMapCentered hand centers tile map horizontally (width 0x2c) then calls vdp1_DrawTileMapSprites
+0x0600dd30 func title_DrawLogoScreen hand draws three tile maps for title/logo screen
+0x0600dd4e func title_DrawLogoScreenSel hand draws tile maps plus optional highlighted entry by index
+0x0600dda4 func pad_FindPressedPlayer hand scans two pad structs for masked button press, returns player 1-2 or 0
+0x0600ddc6 func title_RunLogoScript hand calls with table pointer, tail-calls handler if flag set (was menu_PollInputDispatch)
+0x0600e198 func vdp2_InitBackground hand clears VDP2 buffer, copies data, sets layer/color-offset calls
+0x0600e1f6 func vdp2_ResetBackground hand zero scroll value, sets mode 3, resets layer params
+0x0600e21a func vdp1_SetClipRectParams hand provisional: builds 8-halfword struct and submits it with global arg
+0x0600e2ac func fx_RandomFillTiles hand fills tilemap cells randomly (random mask) for dissolve transition, two modes
+0x0600e46c func fx_DissolveStep hand per-frame timer 0..29 triggering dissolve calls at steps 0 and 5
+0x0600e824 func menu_DrawNumberGlyph hand draws glyph by index sprite via table, flag 0
+0x0600e85c func menu_DrawNumberGlyph_2 hand same as menu_DrawNumberGlyph with flag -1 (erase/highlight variant)
+0x0600e894 func menu_DrawBlankGlyph hand draws fixed glyph 0x12 at x offset with flag -1
+0x0600e8a8 func pad_FindPressedPlayer_2 hand scans two pad structs for other button mask, returns player 1-2 or 0
+0x0600e8ca func pad_CombineButtons hand ORs both pads button words and masks
+0x0600e8da func vdp2_FadePaletteHalf hand copies color RAM data halving RGB via masks, DMA out and back
+0x0600e9cc func menu_DrawNumberRoller hand draws wrap-around 0-10 number roller with neighbors and edge glyphs
+0x0600eaf0 func menu_DrawNumberRollerFixed hand draws three neighboring glyphs wrapping 0-10 around current value
+0x0600edd0 func opt_SetDefaultGameSettings hand writes default 6 option bytes
+0x0600edea func opt_LoadGameSettings hand copies 6 option bytes from argument to settings, calls apply
+0x0600ee08 func opt_SaveGameSettings hand fills 14 bytes 0xff then copies 6 settings and checksum flag
+0x0600ee6c func opt_InitMenuState hand initializes option menu struct fields, button-mask dependent max index
+0x0600eed4 func opt_ResetSoundPage hand stops sound, resets bgm/se selection fields, redraws bgm line
+0x0600ef44 func gfx_SetColorOffsetA hand calls color offset setter with three args then second call
+0x0600ef5a func gfx_DisableLayerA hand calls layer function with (0,4)
+0x0600ef62 func gfx_SetColorOffsetB hand like gfx_SetColorOffsetA with other constants
+0x0600ef78 func gfx_DisableLayerB hand calls layer function with (0,3)
+0x0600efc4 func data_FindSlotIndex hand finds index 0-7 of table entry matching 12-bit id from current record
+0x0600f118 func text_DrawChar hand writes 2x2 tile cells for ASCII char into VDP2 name table, letters digits symbols
+0x0600f1c8 func text_DrawString hand draws null-terminated string with text_DrawChar stepping x by 2
+0x0600f1f6 func menu_DrawItemList hand draws sprite items from 8-byte record list until empty entry
+0x0600f252 func menu_DrawPageItems hand draws main item sprites from table and nested lists
+0x0600f298 func menu_DrawCursorItem hand draws cursor sprite at item index position
+0x0600f2c4 func vdp1_SubmitRectCommand hand builds 4-corner rectangle from pos and size, submits to draw call
+0x0600f320 func menu_DrawHighlightRects hand draws highlighted rect for selected option items, palette selected by cursor
+0x0600f3e6 func text_DrawNumber2Digit hand draws 1-2 digit number with leading space using div/mod helpers
+0x0600f42c func text_DrawTwoDigitZeroPad hand draws two digit number with zero pad via div/mod
+0x0600f45e func text_DrawTimeMinSec hand draws time value as minutes, seconds marks using text_DrawChar
+0x0600f4da func text_DrawNumber4Digit hand draws up to 4 digit number via powers table, suppressing leading zeros
+0x0600f55a func opt_DrawVolumeLine hand draws volume/mode line at row 0x27 showing OFF or number
+0x0600f5a6 func opt_DrawBgmLine hand draws BGM line with <L_R> hint, channel name and number
+0x0600f608 func opt_DrawSeLine hand draws SE line with <L_R> hint, name and number
+0x0600f638 func opt_SoundTestEnter hand sets sound test flag, redraws item list, clears state
+0x0600f65a func opt_SoundTestExit hand clears sound test flag, redraws item list, returns -1
+0x0600f67c func opt_CanIncrementValue hand checks option value below count of choices in list
+0x0600f6b6 func menu_DrawStaticItems hand draws static sprite list for option screen
+0x0600f6f0 func menu_DrawTwoItems hand draws two fixed sprite items from record
+0x0600f74c func menu_DrawDoubleItemLists hand draws item list twice, second offset by 0x28 columns
+0x0600f7a6 func opt_DrawAllLines hand redraws all option screen elements and lines
+0x0600f948 func opt_InitScreen hand sets up option screen VDP2 layers, loads data blocks, draws
+0x0600f9d0 func opt_BgmStopOrSwitch hand switches BGM selection or plays selected sound id
+0x0600faa4 func opt_SePlay hand plays selected SE using bank table, handles range and channel
+0x0600fbb2 func opt_HandleVolumeInput hand handles up/down/start on volume line, plays confirm sound
+0x0600fc9e func opt_HandleBgmInput hand handles BGM selection input left right up down
+0x0600fd36 func opt_HandleSeInput hand handles SE selection input left right up down
+0x0600fe4c func opt_HandleValueInput hand handles left/right changing option value, sound mode toggles
+0x060100c4 func rank_DrawRankingScreen hand draws ranking tables RANK SCORE TIME NAME CHARACTER by page
+0x0601020c func opt_HandleMenuInput hand main option menu cursor movement and dispatch by item
+0x060107d4 func name_InitEntryState hand initializes two player name entry structs of 15 bytes
+0x0601083c func name_DrawChars hand draws entered name characters as sprites
+0x060108dc func name_DrawCursor hand draws name entry cursor sprite with blink flag
+0x06010938 func stub_06010938 hand empty function returns immediately
+0x0601093c func name_SaveRowChars hand copies 8 name row bytes into storage array
+0x06010980 func name_StoreRow hand calls store function with row bytes by player and row index
+0x060109ce func name_NextRow hand saves current row, gets next row, sets dirty flags
+0x06010a20 func name_SetRowHalf hand sets low bit of row index unless last row, flags redraw
+0x06010a64 func name_MoveCursor hand moves cursor column via helper, sets redraw flag
+0x06010a84 func name_ChangeChar hand changes character at column using helper, saves row
+0x06010aaa func name_HandleDirInput hand dpad handling for name entry, row or column move
+0x06010b48 func name_DrawEndCursor hand draws two sprite items for end cursor swap
+0x06010baa func name_HandleButtons hand button handling for name entry: confirm, cancel, select character
+0x06010cec func name_DrawAll hand draws names and cursors for both players
+0x06010d44 func name_DrawSprites hand submits VDP1 sprites for name entry rows and cursor, advances blink counters
+0x06010ec4 func charsel_InitPlayerSlot hand initializes 21-byte player select struct fields from table
+0x06010f04 func charsel_SetPlayerActive hand inits slot, sets state 3, looks up character id from grid
+0x06010f32 func charsel_SetDecidedFlag hand sets flag 0x10 in player slot state
+0x06010f4a func charsel_ResetPlayerState hand clears counters, restores selection if decided
+0x06010f98 func charsel_UpdateSelectMode hand computes which players decided, stores mode 0..2 and calls
+0x06010fee func charsel_SetModeAndUpdate hand stores mode byte then calls update routine
+0x06010ff6 func charsel_InitForMode hand initializes character select for given play mode, sound cue 4
+0x060111b4 func charsel_DrawPortrait hand draws portrait via table with selected character and highlight
+0x06011224 func charsel_DrawName hand draws fighter name centered via table and string
+0x0601129c func charsel_DrawSlot hand draws portrait and name for slot unless other player cursor locked
+0x060112d6 func charsel_ConfirmSelection hand confirms character choice, handles same-pick toggle, sound cue 4
+0x06011378 func charsel_MoveCursor hand moves grid cursor by dpad bits in 2x5 grid, plays move sound
+0x06011436 func charsel_UpdateColorIndex hand steps color index 0-9 with bounce and uploads palette
+0x0601148a func text_DrawGlyphOffset hand draws glyph with computed offset from helper
+0x060114ac func charsel_DrawTwoDigitCount hand splits value up to 99 into digits and draws both
+0x0601151a func charsel_DrawCounter hand draws counter value for slot unless mode 2
+0x06011580 func charsel_SetupFighterCamera hand sets transform rotation and translate for fighter preview
+0x0601163c func charsel_DrawFighterTexture hand draws or loads fighter textures depending on selected slot
+0x060116e0 func gfx_SetupDisplayWindow hand sets display window params temporarily and restores a register
+0x06011758 func charsel_DrawFighterModel hand pushes matrix, sets lighting, translates, rotates and draws fighter polygon model
+0x0601187c func charsel_DrawFighterPreview hand computes scale and draws rect then fighter model for slot
+0x060118f4 func charsel_StartAnimation hand sets animation flags and clears frame counters
+0x0601190e func charsel_AdvanceAnimFrame hand steps animation frame counter by table duration, loop or end
+0x0601198c func charsel_UpdatePlayer hand per-frame player slot update: reads pad, cursor, confirm, animation
+0x06011bda func charsel_SyncReadyFlag hand sets ready bit if other slot active
+0x06011c18 func charsel_DrawSlotText hand draws labels and counter for slot using tables
+0x06011c76 func charsel_DrawPlayerInfo hand draws info per mode and records displayed values
+0x060120b2 func charsel_IsSlotIdle hand returns 0 if slot flags nonzero and not both bits 1 and 8
+0x06012298 func charsel_NextRandomColor hand steps color cycle index 0-8 and stores color bytes
+0x06012348 func charsel_LoadStateMachine hand state machine loading fighter data for both slots, returns 1 when done
+0x0601266a func fx_ClearLines hand loops -8..-1 calling per-line function with argument
+0x06012694 func pad_ReadInputOrDemo hand reads pad word, uses stored buffered input countdown, returns pad bits
+0x06012706 func save_BuildFileName hand copies base string then appends two digit chars from args
+0x06012794 func save_ReadSlotFile hand builds filename and reads save slot data, checks result, returns success
+0x06012806 func save_HandleSlotRequest hand if pad slot button pressed reads save slot and copies data
+0x060128c8 func gfx_LoadAllAssetList hand loops asset list of ids calling load function for each
+0x060128f0 func gfx_LoadAssetListByIndex hand loads asset list selected by index through loader
+0x06012920 func match_InitSettings hand initializes match struct from options table: rounds, time, difficulty, health
+0x06012976 func match_ResetScores hand resets round counters, win flags and score fields
+0x060129fc func match_InitTrainingMode hand match_InitSettings then special health, clears 8-entry table, returns 4
+0x06012a4c func match_InitVsMode hand match_InitSettings then clears 16 entry history and score fields
+0x06012aaa func match_CheckFighterStatus hand checks fighters health and flag, returns end state 0,2,3,4
+0x06012ae8 func match_CompareFighterHealth hand compares two fighters health, returns winner 0,1 or draw 2
+0x06012b48 func match_ScoreRound hand adds round win to winner, computes bonus flags, returns state code
+0x06012c38 func match_ProcessRoundResult hand processes round result: updates streak, flags, win counts
+0x06012d52 func match_RecordRoundHistory hand writes round result code and time into history table
+0x06012df8 func match_UpdateRoundEnd hand updates timer value, scores round, records history, processes result
+0x06012e20 func sound_PlayRoundCue hand plays or queues sound from table indexed by round state
+0x06012e46 func match_UpdateWinIcons hand sets win icon sprite ids per fighter from round result
+0x06012f0c func sound_PlayIfActive hand tail-calls sound routine when state not 0 or 3
+0x06012f24 func match_AdvanceRound hand stores round info then selects next sequence state 0x11 or 0x1b
+0x06012f8c func match_IsContinueAllowed hand returns 0 or 1 whether next stage or ending condition holds
+0x06013014 func match_DrawResultBackground hand picks background by winner health and calls display routine
+0x06013062 func match_SelectNextState hand selects next game sequence state after match: stage, ending, continue
+0x06013290 func match_PickRandomOpponents hand picks 6-7 distinct random opponents excluding player, stores order
+0x06013328 func match_GetOpponentFor hand returns opponent id from order list, by progress or random
+0x060133bc func math_SetBit0IfEqual hand returns arg2 xor 1 if args equal else arg2 with bit 0 cleared
+0x060133ce func match_GetStageIndex hand maps opponent to stage index, 8 if negative, updates flags
+0x06013402 func match_SetStageColors hand sets stage and color bytes by opponent and boss case
+0x06013478 func match_AssignOpponent hand sets opponent entry for player 1 or 2 via match_GetOpponentFor
+0x06013694 func menu_CommitCursorSelection hand copies pending cursor/selection fields (+0x3c,+0x15,+0x14) into current slots (+0x38,+0x13,+0x12)
+0x060136ac func menu_ConfirmOrAdvanceStep hand if step condition on state bytes holds and FUN_06012f8c true increments step, else commits selection
+0x06013704 func menu_HandleStartPressed hand scans both pad slots for start bit, switches mode byte to 0x1f/0x1d/0x21, calls confirm routines
+0x06013bf4 func menu_CheckAnyPlayerStart hand returns 1 and calls helper twice if player pad bits set and param above 14 (was menu_CheckBothStartPressed)
+0x06013e5c func vdp2_SetBackColorAndTailCall hand provisional: calls setup, sets four-arg value DAT, then tail-calls routine with constant
+0x06013ef0 func char_FreeBankIfFighterDiffers hand compares chosen fighter ids of player and opponent slots (stride 0x15), calls swap routine if different (was char_SelectSwapIfDiffer)
+0x06013f32 func char_SelectAdvanceStep hand advances fighter selection; handles CPU opponent pick via FUN_06013328/FUN_060133bc, fills selection record
+0x060140a4 func char_SelectRunStateMachine hand switch state machine 0..10,0xfe,0xff calling load and wait routines per state, returns 1 when done
+0x060142a6 func mode_ResetSystemsAndInit hand clears per-player flags by bitmask, calls ~9 init routines, sets state byte 5 and zeroes flag
+0x06014c34 func vdp2_InitScreenSetup hand calls display-off, masks a register, sets color offset values and layer params with constants
+0x06014c8e func vdp2_LoadScreenTables hand copies rows of table data via copy routine in loop, sets color offsets afterwards
+0x06014cf2 func stage_SelectEntry hand stores index and sub index, computes table pointer (0x24 and 0xc strides), inits screen, sets flag
+0x06014d90 func stage_LoadStateMachine hand 4-step state machine start load, wait complete, load tables, returns 1 at state 3
+0x06014f08 func cam_ApplyFighterRelativeView hand reads three fixed-point fields and angle from camera table entry, calls translate and rotate (was cam_ApplyViewFromParams)
+0x06014f66 func cam_InitCameraWork hand fills camera work struct with default positions, angles, limits and calls matrix init three times
+0x06015050 func cam_ResetCameraState hand first-call init, zeroes position vectors, computes half angle and distance, sets flags and defaults
+0x06015110 func cam_UpdateFrame hand runs sync update, then if mode 1 does camera step and render else tail-calls other routine
+0x06015158 func cam_ComputeScreenBounds hand projects two fighter points per player via transform, scales by depth, stores width and height ratios
+0x06015284 func cam_GatherFighterPositions hand copies per fighter position and facing fields into camera work, computes midpoint, distance and angle between fighters
+0x06015444 func cam_ConvertFighterPositions hand for each fighter scales xyz position by fixed factor and stores negated z in camera table
+0x0601549a func cam_StepInterpolation hand advances camera tween by frame counters, interpolates position and target, accumulates velocity, returns state code
+0x0601567c func cam_GetTweenType hand returns signed byte of camera mode variable (was cam_GetModeByte)
+0x060156b0 func cam_DispatchMode hand switch on camera mode 1..9 calling per-mode camera update routines
+0x06015704 func cam_UpdateDefaultMode hand resets camera on first-frame flag with copy, else runs default camera update FUN_06016512
+0x0601573a func cam_AddVelocityToPosition hand provisional: adds a delta from global to camera position field
+0x0601574c func cam_SetFovTempClamp hand temporarily sets a global to constant, calls routine, restores global (was cam_RunWithTempMask)
+0x0601578c func cam_SetupViewAndFacing hand sets camera view matrix via lookat-like calls, computes which fighter faces side and flips sprite flag, returns bool
+0x06015938 func cam_InitDefaultPosTarget hand fills position and target vectors with default constants using fixed-point helpers
+0x0601598e func cam_StartShotRandom hand picks random camera shot variant 0..4 and fighter, sets position and target, starts transition timer 0x46
+0x06015bcc func thunk_cam_UpdateDefaultCore hand thunk jumping to FUN_06016512 default camera update
+0x06015c34 func cam_UpdateAndSavePosition hand runs default update then saves current position/target into backup fields
+0x06015c72 func cam_UpdateOrRestoreShot hand dispatches default camera, shot with special move flag or restores saved position, returns 0x1b
+0x06015d00 func cam_UpdateSpecialMoveShot hand special-move camera shot chosen by fighter move id (0x51,0x53,0x4f), randomised variants and timers
+0x06015f0a func cam_ResetShotTimers hand sets frame counter to 1, clears second counter and zeroes two vector blocks
+0x06015f68 func cam_UpdateMoveTableShot hand looks up move id in table to find camera script and sets script pointer
+0x06016070 func cam_UpdateFinishingShot hand camera for KO/finishing move, uses move id and frame count threshold 0x50 to set vectors
+0x0601622c func cam_UpdateWinnerShot hand round end camera picks winner by 2-index, checks frame count table, builds position
+0x060162fc func cam_UpdateThrowShot hand throw camera when mode 1 or 2, computes delta between fighters via vector helper and positions camera
+0x06016512 func cam_UpdateDefaultFollow hand default follow camera, computes view vectors then calls FUN_06016a0a and FUN_06016ad8
+0x060165f2 func cam_UpdateZoomSmoothing hand smooths camera zoom amount over time using fixed-point helpers, resets when buttons pressed
+0x060166c0 func cam_UpdateKnockdownShot hand camera for states 0xb/0xc of fighter, selects target fighter and step table by index
+0x060169ce func cam_ComputeFollowAndApply hand calls FUN_06016c2c then FUN_06016a0a with side-flipped arguments
+0x06016a0a func cam_BuildEyeTarget hand computes camera eye and target vectors from two scalar offsets with scale and trig helpers, sets timers
+0x06016ad8 func cam_SetStepDeltas hand divides eye/target differences by frame count to get per-frame deltas
+0x06016b76 func cam_DecodeKeyframeVectors hand decodes 7 compressed floats via FUN_0601723a and key interpolation into eye and target vectors
+0x06016c2c func cam_ComputeFramingDistance hand computes fighter-to-camera distances and framing, many fixed-point subtractions and divides
+0x06016f2e func fighter_EitherInState20 hand returns 1 if neither fighter state byte equals 0x20 (was fighter_BothIdleCheck)
+0x06016f48 func cam_SelectShotState hand maps current fighter states (0x15,0x16,0x1f,0x20,0xb,0xc) to next shot state number
+0x06016ff4 func fighter_AnyHitFlagSet hand returns 1 if either fighter has negative flags byte with nonzero counter
+0x06017022 func cam_CheckDistanceThreshold hand compares max of two positions against thresholds, returns 1 when exceeded
+0x0601705a func pad_GetEdgeCombined hand ORs both pad words masked, returns 0..3 edge code for press/release versus stored previous
+0x0601708c func math_DotXZBelowScaledMag hand sums x and z products, compares against scaled param squared (sqrt helper) (was math_DistanceLessThanRange)
+0x0601711c func math_DotXZOutsideCamRange hand horizontal distance test against stage edges minus margins, returns 1 if outside (was math_OutsideStageBoundsX)
+0x06017194 func math_DotXZOutsideSymRange hand returns 1 if combined x z distance outside plus minus limit (was math_OutsideSymmetricRange)
+0x060171f0 func math_FixedPow hand repeated fixed multiply of constant by base up to 11 times, returns 0 if base zero
+0x0601723a func math_DecodeSmallFloat hand decodes packed 16-bit float (4-bit exponent field, mantissa, sign) to fixed value
+0x060172a4 func math_HermiteInterpolate hand cubic hermite interpolation between two decoded key points at time param
+0x0601738c func math_EvalKeyframeCurve hand finds segment in keyframe list for time param and interpolates via FUN_060172a4
+0x06017488 func cam_UpdateDebugViewInput hand pad-driven options screen handling with left right changes to settings, state byte values 1..3 (was menu_UpdateOptionsInput)
+0x06017890 func render_SetupCameraRotation hand loads view vector set by param, sets matrix push with scaling by fixed constants for player side
+0x060179c0 func fighter_InitDisplayTables hand loops fighters computing pointer tables and values plus 0x1e offsets, resets counters
+0x06017b8c func render_ToggleBufferPointers hand flips buffer index and sets paired pointers to buffer A or B
+0x06017c3c func hit_BuildSphereBoundsBytes hand builds both fighters bone hit/hurt sphere lists with min/max clamping per bone (was render_BuildHitSphereLists)
+0x06017d32 func hit_GetReachByAnimFrame hand returns reach constant by frame count of fighter animation (0x30..0x40 range)
+0x06017d9e func hit_CollectBoneSpheres hand iterates bone linked list, transforms positions and fills sphere array with extents, returns counts
+0x06017f1e func hit_BuildFighterExtents hand computes fighter min/max extents from spheres and reach, fills extent record
+0x06018016 func hit_OffsetSphereArray hand adds xyz offset to each of count spheres (stride 0x10) of player
+0x06018048 func fighter_GetModeOrJump hand provisional: returns mode byte or jumps via table when mode equals 6
+0x0601805a func hit_RunCollisionAndReaction hand checks fighter states 0x1e,0x1f,0x20 flags and calls distance compare FUN_06018144 when allowed (was hit_CheckCloseCombat)
+0x06018144 func hit_RunPipelineIfNear hand sums absolute x,z,y differences between fighters, writes distance and calls FUN_06018234 if below threshold (was hit_ComputeFighterDistance)
+0x06018234 func hit_ClampSphereLimits hand clamps per-player spherical limit bytes against other player limits for count*3 entries
+0x060182e8 func hit_ClearHitFlags hand fills hit result array with 0xffffffff then zeroes sections by fighter flag bits
+0x0601833e func hit_ResetHitRecords hand initializes hit record arrays per fighter with zero and 0xffffffff sentinels
+0x060184c4 func hit_ResolveBodyHits hand resolves hit results for both fighters from flags, accumulating damage and reaction records
+0x06018734 func guard_CheckBlockResult hand returns -1/0/1 guard result by attack flags, move id (7,8,0x22) and positional checks
+0x06018886 func math_PowerOfFour hand provisional: loops multiplying value shifted by 2 via helper, returns result or 1
+0x060188b8 func damage_ComputeHit hand computes damage for attacker index via guard result and scaling table, applies to defender
+0x06018b36 func damage_ApplyHitReaction hand clears per-fighter result vectors then applies hit reaction, knockback and damage values
+0x06018da6 func hit_ClampPushbackXZ hand per fighter sets knockback value from pushback table, clamped by move limit (was hit_ComputeKnockbackX)
+0x06018e6c func hit_ClampPushAndTransfer hand per fighter derives knockback vector components from attacker values and limits (was hit_ComputeKnockbackAxes)
+0x06018f98 func hit_LimitPushByExtents hand min/max of two fighters bounding extents into overlap box fields (was hit_ComputeContactBox)
+0x060190aa func hit_AdjustPositionsForOverlap hand pushes fighters apart by overlap values, sets flag when adjusted
+0x0601919a func hit_CheckOverlapAndPush hand computes extents min max and returns overlap flag adjusting positions
+0x0601925c func hit_ApplyPushbackScale hand scales push vector by distance-based factor via vector helper
+0x060193a4 func fighter_SetHurtMaskBits hand ORs mask table entries for set bits of param into fighter hurt masks, stores value
+0x06019416 func damage_SubtractLife hand reduces guard stamina field by computed amount when frame mask allows, clamps to zero (was damage_ReduceGuardGauge)
+0x06019474 func hit_ComputeContactPoint hand iterates hurt spheres of defender vs attack position, finds nearest and fills match (was hit_FindClosestHurtSphere)
+0x06019608 func sound_PlayCueOffsetByMode hand adds mode-dependent offset (flag check) to sound cue and plays it
+0x06019634 func ai_UpdateInputSelection hand provisional: checks pad bits of each fighter slot, sets control source and mask bits, returns state
+0x060198f8 func fighter_DrawModelParts hand sets target field from index then iterates motion events calling per-event handlers (was fighter_UpdateMotionScript)
+0x060199ac func thunk_fighter_ProcessMotionStep hand thunk jumping to FUN_0601b88a-area handler through pointer
+0x060199d2 func fighter_InitModelInstance hand sets up motion state for fighter on new move, clearing 0x15 words and filling fields by fighter side (was fighter_StartMoveSetup)
+0x06019e28 func save_InitBackupStatus hand calls two cd/sound setup routines, resets flag fields and returns 1 (was cd_PlayStageTrack)
+0x06019ec0 func bup_CallStoreResult hand calls helper and stores result in first slot of output array (was math_StoreResultPair)
+0x0601a2a8 func save_InitBackupMenuState hand stores slot byte, reads data pointer through call, clears two bytes (was save_SetSlotAndLoad)
+0x0601a2c6 func save_ShowBackupMessage hand if save check passes configure vdp2 screen, print message, then call finalisers; returns bool
+0x0601a3c4 func vdp2_LoadMenuImageBlock hand copy header and body to backup RAM via copy helpers, tail-calls write (was save_CopyBlockToBackupRam)
+0x0601a40a func save_MenuUpdateInput hand backup menu pad handling for up down, cursor index byte, returns 1 on confirm
+0x0601a548 func save_DispatchState hand tail jump through function table indexed by state variable
+0x0601a55c func util_BcdToByte hand converts packed BCD byte to binary integer
+0x0601a57c func util_BcdToWord hand converts two BCD bytes (high and low) into integer 0..9999
+0x0601a5a8 func save_WriteBackupFile hand builds save record from clock BCD fields, copies strings, checksum with FUN_0601a9b0 (was save_BuildSaveHeader)
+0x0601a6c8 func save_WriteLastBronxFile hand calls header builder with strings LASTBRNX_01 and LAST_BRONX (was save_BuildLastBronxHeader)
+0x0601a6d4 func save_VerifyBackupData hand reads backup RAM file and checks CRC with FUN_0601a9ce, returns status
+0x0601a752 func opt_ClearSettingsBlock hand zeroes 0x28 words of save work area, sets defaults (was save_InitWorkArea)
+0x0601a774 func save_InitEntrySlot hand finds free entry slot among 15 by index, copies defaults and index into entry
+0x0601a842 func save_InitEntrySlotA hand calls save_InitEntrySlot with work area offset 0x78
+0x0601a84a func save_InitEntrySlotB hand calls save_InitEntrySlot with second work area offset 0x78
+0x0601a852 func save_InitRankingTableA hand loops 9 groups of 5 entries initializing records with decreasing score values
+0x0601a8ba func save_InitRankingTableB hand loops 9 groups of 5 entries initializing records with time increments of 12
+0x0601a944 func save_InitAllTables hand calls four init routines for entries and rankings
+0x0601a956 func save_InitAndBuildHeader hand init all tables, two extra init calls, work area init and header build
+0x0601a970 func crc32_Calculate hand bitwise CRC32 over byte buffer with polynomial constant
+0x0601a9b0 func save_StoreChecksum hand computes CRC of data after header word and stores it in first word
+0x0601a9ce func save_CompareChecksum hand returns stored CRC minus recomputed CRC for buffer
+0x0601aa04 func text_PrintAtOffset hand tail calls print routine with base text address added to offset
+0x0601acb0 func menu_MoveCursorVertical hand steps cursor index by delta wrapping 0..10 and skipping disabled rows by pad mask
+0x0601ad4e func menu_DrawCursorBox hand builds VDP1 box vertices from row table and cursor index, sets color and draws polygon
+0x0601aeca func menu_CenterTextX hand returns x position centering text of given length in 25 columns
+0x0601aed8 func menu_PrintLabelPair hand prints label and value strings centered via menu_CenterTextX
+0x0601afe0 func menu_DrawOptionsCursor hand draws highlighted options cursor rectangle from row table at index, colour from sub byte
+0x0601b0a4 func menu_MoveOptionsCursor hand steps options cursor index by delta wrapping 0..27 skipping rows not in enable mask
+0x0601b0f2 func menu_MoveOptionsCursorGrid hand moves options cursor across 3-wide grid by delta with wrap and mask skip
+0x0601b1d6 func menu_InitScrollState hand calls init routines and sets cursor variables to defaults and a handle (was menu_InitCursorState)
+0x0601b394 func menu_ClampScrollPositions hand clamps two scroll offsets against computed limits using fixed helper
+0x0601b428 func menu_ScrollByPad hand pad bits adjust scroll offsets with step size and bounds
+0x0601b750 func vdp2_InitDisplayDefaults hand calls five display setup routines with constants, fills settings and starts routine with 0x40
+0x0601b7b8 func vdp1_InitCommandListState hand zeroes command count variable and clears entry then calls init routine
+0x0601b7dc func vdp1_AddCommandEntry hand appends 0x38-byte entry with pointer and initialises list, returns index or -1 when full
+0x0601b828 func vdp1_ResetCommandEntry hand calls reset routine on entry at index (stride 0x38)
+0x0601b88a func vdp1_AddCommandEntryType2 hand appends type 2 entry with param pointer if list not full
+0x0601b8ce func vdp2_SetLayerEnableMask hand for 6 layers sets mode 3 or 0x23 by bit of mask
+0x0601b934 func vdp1_SetSystemClip hand calls clip and window setup with constant coordinates
+0x0601b95e func vdp1_DrawCommandList hand sets clip, loops entries calling draw routines by type 0 or 1
+0x0601ba1c func render_SetupMovieFrame hand provisional: transforms two points via helper, averages, builds frame rect and calls draw
+0x0601bd90 func vdp2_BuildLayerParams hand fills sprite command records from source entries with mask, color and size (was vdp1_BuildSpriteCommands)
+0x0601be38 func vdp2_SetupSpritePriorities hand sets priority/colour for slots -8..-1, then 6 slots from table and special mode
+0x0601bf14 func vdp1_SetupAnimPointers hand provisional: sets frame pointer pairs into object and sub-object, selects texture index by type
+0x0601bfc0 func vdp2_LoadBackgroundBlock hand copies texture and palette data to VRAM by offsets, clears table depending on mode (was vdp1_LoadTextureBlock)
+0x0601c07c func vdp2_LoadStageGraphics hand copies 16 header words, builds commands and loads each texture entry via copy helper (was vdp1_LoadObjectTextures)
+0x0601c1b8 func vdp2_SetupGameScreen hand sets display params, branches on mode byte (0,3,4) for layer config
+0x0601c25c func vdp2_InitLayerTable hand initialises object records with defaults and pointers from table (was vdp1_InitObjectTable)
+0x0601c490 func render_ComputeBackgroundScroll hand computes scroll values from camera positions and wrap masks, sets deltas
+0x0601c828 func render_DrawBackgroundLayer hand sets matrix and scale from camera, draws background with fixed constants, updates field flags
+0x0601c8a8 func render_DrawStageBackground hand cycles frame index 0..2 over 0x34-byte records, sets layers and draws background (was render_DrawFrameCycle3)
+0x0601c99e func render_DrawStageBackgroundDual hand like frame cycle with flag bits depending on sign of position, draws background (was render_DrawFrameCycle3Flags)
+0x0601cb0e func render_FinishFrame hand if flag zero calls two routines then another and jump
+0x0601cb30 func vdp2_LoadColorTablesByMode hand per mode 1/3/4 passes string tables to load routines (was vdp2_LoadScreenFontStrings)
+0x0601cc6e func vdp2_LoadSceneEntry hand loads scene by index (stride 0x6c) setting pointers and copying data
+0x0601ccc8 func mode_SetStateAndClear hand stores param in second byte, clears first byte, returns 1
+0x0601ccd6 func menu_UpdateModeResultScreen hand state machine for mode result screen; prints SURVIVAL MODE, TIME ATTACK, WATCH MODE, SATURN MODE, STAGE, BONUS STAGE labels
+0x0601ced4 func gfx_SetupThreeLayerParams hand , loops 3 times calling table of setter function pointers with layer params from struct
+0x0601cf50 func mem_ClearWordsA hand clears block of 16-bit words, count from constant
+0x0601cf60 func mem_ClearWordsB hand clears block of 16-bit words, count from second constant
+0x0601cf70 func trail_ClearEntryBuffers hand clears two buffers of indexed 0x1c-byte entry via mem_ClearWordsA
+0x0601cf9c func trail_DrawStrip hand builds weapon trail strip points, scales via fixed-point helpers, emits sprite commands per segment
+0x0601d158 func trail_DrawAllStrips hand loops four 0x20-byte trail entries, draws active ones via trail_DrawStrip
+0x0601d1ec func fighter_SetupPalette hand , clears flags, builds or copies fighter colour palette and 3-entry parts table
+0x0601d32c func trail_UpdateAll hand per-frame update of both players weapon trails, decays length, advances ring indices mod 10
+0x0601d3aa func trail_DrawPlayers hand draws trail for each player that has active trail bits, returns shifted flags
+0x0601d3ce func trail_SetType hand sets player trail type bits in trail flag word from lookup table
+0x0601d3f2 func trail_SetDefaultType hand sets player trail type bits to default value 0x15
+0x0601d42c func trail_UpdatePoints hand updates ring buffer of trail edge points per player from weapon endpoints, interpolating halfway
+0x0601d584 func trail_DecayLength hand per-player 3-slot trail length grow or shrink, clears flag bits when zero
+0x0601d60a func trail_DrawPlayer hand draws quads between consecutive ring buffer trail points with sprite commands
+0x0601d770 func pal_BuildShadeRamp hand builds 15 darkened RGB555 colours from base colour and uploads palette
+0x0601d820 func mem_ClearEntryFlags hand zeros first byte of each 0x10-byte entry in table
+0x0601d874 func hit_spark_InitAll hand loops two entries calling per-slot init function pointer with index and offset 0x10
+0x0601d8a6 func hit_spark_Start hand activates 0x10-byte effect slot with type and copies 3-word position vector
+0x0601d8d6 func hit_spark_Advance hand advances frame counter of two effect slots, wraps at 0xd or 0x21 by type
+0x0601d92c func hit_spark_Draw hand transforms effect position, projects with divide, emits sprite command with texture size lookup
+0x0601da5c func vdp2_LoadCharPattern hand copies tile pattern block to VRAM by index, fills gradient pattern rows, DMA, returns next index
+0x0601dabc func hud_ClearBuffers hand zeroes two word buffers used for HUD tile map
+0x0601db80 func hud_BlitTileImage hand copies non-transparent 16-bit tilemap image of width and height into HUD map at x,y
+0x0601dbc8 func hud_SetDigitPairQuad hand sets two sprite quad texture coordinate entries from byte holding two digit indices
+0x0601dc58 func hud_SetDigitQuad hand sets one sprite quad texture coordinate entry from 0xc-byte table entry
+0x0601dc9c func hud_DrawRoundWinMarks hand draws per-player round win marks, blinking last mark, using blit of two tile images
+0x0601dd5e func hud_InitLifeBars hand resets two life bar structs, max life from player data, computes fixed-point division scale factors
+0x0601de34 func hud_DrawBattleHud hand clears buffers, draws frame, win marks, timer area, fighter name labels via blit, then registers callback
+0x0601deca func hud_DrawTimer hand converts frames or seconds to two-digit minute and second numerals and blits four digit images
+0x0601df98 func hud_UpdateLifeBarTiles hand fills life bar tile map rows from life values for both players, 8 units per tile
+0x0601e2ac func vdp2_LoadPatternList hand walks list of pattern entries, copies each to VRAM, stores base index, returns next index
+0x0601e304 func load_StateReset hand sets loader state byte to 0 and returns 1
+0x0601e30e func load_StepStateMachine hand multi-state loader step: allocates, waits, decompresses image, copies to VRAM via FUN_0601e3e0, returns 1 when done
+0x0601e3e0 func gfx_UnpackSpriteRuns hand walks offset list, stores destination pointers and copies run-length sprite data into buffer
+0x0601e432 func vdp2_PrintString hand writes ASCII letters and digits as tile cells into VDP2 name table at column and row, skips others
+0x0601e4f4 func vdp2_PrintNumber hand clamps value, splits decimal digits via divide helper, prints via vdp2_PrintString, returns end position
+0x0601e584 func vdp2_BlitTileImage hand copies tile image into VDP2 name table with tile offset add and mask, skipping zero cells
+0x0601e8bc func snd_PlayIndexedEntry hand sends sound command with table entry at index times 0x10
+0x0601e8d2 func snd_PlayEntryOrDefault hand sends sound command with index, or table entry 10 if index not positive
+0x0601e8ec func snd_SendCmdA hand tiny wrapper sending fixed sound command with one argument
+0x0601e8fa func snd_SendCmdB hand tiny wrapper sending fixed sound command label B with one argument
+0x0601e908 func snd_SendCmdC hand tiny wrapper sending fixed sound command label C with one argument
+0x0601e916 func snd_SendCmdD hand tiny wrapper sending fixed sound command label D with one argument
+0x0601e924 func snd_SendCmdEOrD hand sends command E with value, or command D with 10 if negative
+0x0601e984 func snd_SendAltCmdA hand tiny wrapper using second send function with fixed label A
+0x0601e992 func snd_SendAltCmdB hand tiny wrapper using second send function with fixed label B
+0x0601e9a0 func snd_SendAltCmdC hand tiny wrapper using second send function with fixed label C
+0x0601e9ae func snd_SendAltCmdD hand tiny wrapper using second send function with fixed label D
+0x0601ea52 func snd_SendThirdCmdNoArg hand wrapper calling third sound send function with label and zero
+0x0601ea5a func snd_SendThirdCmdA hand tiny wrapper third sound send function label A with argument
+0x0601ea68 func snd_SendThirdCmdB hand tiny wrapper third sound send function label B with argument
+0x0601ea9c func snd_SetStereoFlag hand sets or clears bit 7 of sound mode byte depending on argument
+0x0601eab2 func snd_LoadDriverBegin hand starts sound driver file load, stores buffer pointers, resets step, returns 1
+0x0601ead4 func snd_LoadDriverStep hand two-step state machine: wait load then copy driver to sound RAM, set stereo, volume 0x7f
+0x0601eb34 func snd_FindBankEntry hand walks 8-byte entry lists terminated by negative byte, returns pointer to Nth list or null
+0x0601eb88 func snd_RequestBank hand if different bank requested, stops sound, starts loading bank table entry, records bank index
+0x0601ebe6 func snd_ResetBankSlots hand finds bank entry list and marks each 8-byte entry slot invalid with 0xff
+0x0601ec08 func snd_RequestBank1 hand calls snd_RequestBank with bank 1
+0x0601ec0c func snd_RequestBank0 hand calls snd_RequestBank with bank 0
+0x0601ec10 func snd_GetLoadedBank hand returns currently loaded sound bank number
+0x0601ec16 func snd_PollBankLoad hand state machine finishing requested bank load, copies data, resets slots, returns 1 when bank is loaded
+0x0601ec80 func snd_StartDataLoad hand records slot and size, starts file open for sound data from table, returns 1
+0x0601ecce func snd_FinishDataLoad hand when load done copies two data blocks to sound RAM and calls completion, returns done flag
+0x0601ed70 func snd_ProcessCommandWord hand decodes 16-bit sound command: high byte selects type, dispatches to play or stop calls with volume 0x7f
+0x0601ede4 func snd_StopChannels0to3 hand , calls same function with 0,1,2,3
+0x0601ee00 func snd_ClearCommandQueues hand zeroes counts of five 0x22-byte sound queues, sets current queue 1
+0x0601ee50 func snd_QueueCommand hand adds command id to current queue, removing duplicate from other four queues, max 16 entries
+0x0601eecc func snd_FlushQueue hand advances queue index 1..4, executes queued commands via snd_ProcessCommandWord, empties queues
+0x0601ef2a func snd_ClearQueuesKeepIndex hand clears queues but preserves current queue index
+0x0601ef50 func mem_ClearSlotFields hand zeroes bytes 2-5 of each 6-byte entry in two-entry table
+0x0601f0d4 func snd_StopPendingSlots hand for two slots with positive count sends stop command and clears them
+0x0601f12c func result_Init hand sets result screen state 0, player side, character data, chooses buffer by side, returns 1
+0x0601f160 func result_Step hand result screen state machine: load graphics, draw, count up bonus scores, wait, exit at state 10
+0x0601f3c0 func result_SetupScreen hand initialises VDP2 layers, copies image data, sets scroll and priority, draws sprite lists for result screen
+0x0601f488 func vdp2_LoadImageBlock hand clears region and copies compressed image block into VDP2 VRAM at offset
+0x0601f540 func sprite_PlaceList hand places sprites from 4-byte entries until negative first byte, using base offset
+0x0601f586 func sprite_PlaceOne hand places single sprite from 4-byte entry with base offset
+0x0601f5b8 func sprite_PlaceXY hand places sprite with id and position plus base offset
+0x0601f5e6 func math_Gcd hand Euclid greatest common divisor loop using modulo helper
+0x0601f604 func rank_InsertEntry hand shifts 8-byte table entries down and inserts new blank-name entry with score at position
+0x0601f690 func result_InitBonusState hand zeroes result bonus fields and sets tile numbers by screen setting
+0x0601f6cc func result_CalcScore hand computes total score from round times, remaining life and bonuses, clamps to maximum
+0x0601f876 func result_PollSkipInput hand provisional, checks pad button mask for side, calls two helpers and returns first nonzero result
+0x0601f8ec func rank_DrawRow hand draws one ranking row: rank number, time digits, colon, and bar of tile segments in 16-unit steps
+0x0601fa96 func rank_DrawScoreCountup hand draws counting-up score digit value and increments counter
+0x0601fad0 func rank_DrawTable hand draws ranking table sprite list, name rows, score and rank sprite
+0x0601fb4a func rank_DrawFrame hand draws framed box and text via two helper calls with fixed coordinates
+0x0601fb82 func rank_UpdateNameEntryScreen hand draws name entry rows, runs countdown timers, sets state 10 when finished
+0x0601fcb6 func rank_DrawNameList hand draws five name rows, highlighted row blinks, with score and name, increments frame counter
+0x0601fd92 func rank_NameEntryStep hand handles pad input for 3-letter name entry from ABCDEFGHIJKLMNOPQRSTUVWXYZ012345 alphabet, backspace and end characters
+0x0601ffba func rank_NameBackspace hand blanks current name char and moves cursor back
+0x0601ffe0 func rank_NameEntryFinish hand sets entry timer to 0xffff and done flag
+0x0601ffec func rank_CursorInputRepeat hand button direction handler with held-counter and direction change reset
+0x06020026 func rank_CursorInputWrap hand button direction handler for left-right with wrap logic at end positions
+0x06020090 func rank_UpdateCursor hand reads pad masks, moves name-entry alphabet cursor with repeat acceleration and wrap 0..0x27
+0x060201f4 func str3_Compare hand compares 3 bytes, returns 0 if equal else 1
+0x0602021a func str3_Copy hand copies 3 bytes
+0x06020228 func rank_SanitizeName hand replaces NUL and @ by space and checks name against forbidden names tables
+0x060202a8 func vdp2_SetMapCell hand writes one 16-bit cell into VDP2 name table, choosing page by x at 0x40
+0x060202ce func vdp2_PutFontChar hand draws font glyph block of given size style into name table, mapping digits letters and punctuation
+0x06020432 func vdp2_PutFontString hand draws zero-terminated string using glyph drawer with style advance
+0x06020478 func vdp2_PutFont3Chars hand draws exactly three characters via glyph drawer
+0x060204c0 func vdp2_PutNumberPadded hand converts value to 7 decimal digits, blanks leading zeros, draws with glyph drawer
+0x06020552 func vdp2_PutNumber2Blank hand draws two-digit BCD from table clamped 99, leading zero as space
+0x060205c0 func vdp2_PutNumber2Zero hand draws two-digit BCD from table clamped 99 with leading zero
+0x06020614 func rank2_Init hand sets ranking screen state 0, side, character data, mode 1 and sprite table pointer, returns 1
+0x06020668 func time_SplitFrames hand converts frame count to minutes seconds centiseconds packed in one word, clamps 99:59
+0x060206b8 func time_GetRankEntry hand returns stored time of rank entry, or recomputed value if frames low
+0x060206e2 func vdp2_PutTime hand draws mm'ss"cc time from packed frames with glyph drawer, returns end x
+0x0602079c func rank2_DrawRecordRow hand draws record rank number, time and up to four icons from record entry
+0x06020832 func rank2_DrawTotalTime hand sums times of first N entries and draws total, increments counter
+0x06020874 func rank2_DrawTable hand draws ranking sprite list and name list, score time and rank sprite
+0x06020900 func rank2_CheckNewRecord hand compares score with ranking tables, inserts into hit lists, returns flags 0x20 and 0x40
+0x06020984 func rank2_Start hand init ranking state, checks new record, sets sprite table and timers, returns flag
+0x06020a4c func rank2_Step hand ranking screen state machine: load graphics, draw, wait, finish returning 1
+0x06020b3c func rank2_SetupScreen hand initialises VDP2 layers, copies image blocks and starts drawing ranking screen
+0x06020cc4 func nameentry_BuildDrumPolys hand builds 40 rows by 12 columns of polygon commands for rotating letter drum, copies image blocks
+0x06020ea0 func nameentry_DrawDrum hand sets up camera vectors from state and draws drum, calls camera update and row draw
+0x06020f02 func nameentry_CalcDrumRotation hand computes drum angle and position using sin cos helpers from selection index and direction
+0x06020fe6 func nameentry_UpdateCamera hand updates camera position by drum mode, interpolates toward target with fixed-point multiply
+0x060211bc func nameentry_UpdateZoomState hand state switch for drum zoom in/out, updates scale, returns state
+0x06021264 func nameentry_DrawDrumRows hand per-row (40) matrix push, rotate, scale, select highlight by cursor and emit polygon
+0x0602144a func nameentry_StoreEntry hand copies 3-byte entered name into the ranking tables when new-record flags set
+0x0602148e func nameentry_UpdateCommit hand fades and commits entered name, updates tables, sets state 6 when countdown ends
+0x06021670 func scr_InitSideScreen hand , sets state 0, side, character data, scale 0x40 and buffer pointer, returns 1
+0x060216b2 func scr_StepSideScreen hand state machine: load graphics, wait, draw, advance states, uses FUN_060218e4 draw
+0x060217d8 func vdp2_LoadImageBlock_2 hand clears region and copies compressed image block into VDP2 VRAM at offset, copy of earlier loader
+0x0602181e func scr_SetupSideScreen hand initialises VDP2 layers, copies image data, sets scroll and priority for scrolling text screen
+0x060218e4 func scroll_FeedNextRow hand when scroll position passes threshold draws next text row image and advances row pointer
+0x06021948 func vdp2_BlitImageToPages hand copies width-height 16-bit image into one of four 64x64 name table pages at cell x,y
+0x060219d0 func scroll_IsDone hand returns 1 when scroll row position is 4 less than scroll offset
+0x060219f0 func scroll_AdvanceAndClearRow hand adds scroll speed, sets scroll register, zeroes the row just scrolled out in two pages
+0x06021a84 func sprite_CopyListAdjusted hand copies 4-halfword sprite entries adding tile base offset until zero tile
+0x06021abc func sprite_UploadListFromImages hand for each entry copies image data to VRAM position computed from table
+0x06021b44 func model_RelocatePack hand relocates pointers of model pack by base, builds list of object pointers, calls texture offset fixup
+0x06021bb4 func model_AddTextureBaseToFaces hand adds texture base to 12-byte face entries colour field and sets flag for type 2
+0x06021bf2 func model_AddTextureBaseAndFlag hand same as face fixup but also ORs flag into attribute field
+0x06021c3c func model_SetFlagOnObjects hand ORs flag bit into attribute of all faces of all objects in list
+0x06021c78 func model_BuildObjectTable hand copies object table entries, relocates and duplicates face arrays into new buffer with texture fixup
+0x06021d0c func model_FindObject hand looks up object pointer by id in table, falls back to base plus id
+0x06021d30 func model_LoadPackBoth hand relocates model pack for one or both texture banks, then relocates object pointers
+0x06021d98 func cram_WriteColors hand copies palette words to colour RAM, sets dirty bits per 16-colour bank, with bus lock call
+0x06021e90 func cram_ReadColors hand reads palette words from colour RAM mirror into buffer
+0x06021ec4 func copy_SetupRequest hand stores source destination and word count, chunk size, running flag into copy request struct
+0x06021edc func copy_SetFlag hand sets a global flag to 1
+0x06021ee4 func copy_QueueFromDescriptor hand looks up destination block, checks size, sets up copy request, dispatches or flags; hangs if missing
+0x06021f46 func copy_StepChunked hand copies one chunk of words per call, returns 1 when all words copied
+0x06021fd8 func load_InitSlot hand sets slot id and index, buffer pointer from index times 0x20, state 0, returns 1
+0x06021ff6 func load_StepRelocState hand 4-state step machine: call loader, poll, copy and relocate data via FUN_06022050, return 1 when done
+0x06022050 func mot_CopyRelocateData hand copies data words to slot buffer then relocates pointer tables and sets per-slot table base pointers
+0x06022120 func mot_GetFrameEntryByKey hand selects one of two tables by compare to slot id, returns masked-index word entry
+0x0602213a func mot_GetFrameEntry hand returns word from per-slot table at masked index
+0x0602214a func mot_RelocPtrListNullTerm hand adds base to each pointer until zero and relocates nested 4-entry tables
+0x06022190 func mot_RelocPtrTable4 hand relocates four child pointers by base, recursing into 7-entry tables on change
+0x060221ee func mot_RelocPtrTable7 hand relocates seven positive child pointers by base then fixes each child
+0x0602223e func mot_RelocPtrAtOffset4 hand adds base to pointer at offset 4 if nonzero
+0x06022258 func mem_AddOffsetToWords hand adds constant to each int in array of count words
+0x0602239c func fighter_RunQueuedCommand hand takes pending command from slot, dispatches via handler table indexed by top byte
+0x060223f0 func fighter_RunNextCommand hand promotes next command to current, saves previous, dispatches handler table by top byte
+0x0602245c func game_UpdateFightFrame hand per-frame update of both fighters: distance, facing, command dispatch, camera, hit processing, input/guard counters
+0x06022bda func fighter_TryStartReactionAnim hand checks hit flags then starts reaction animation, sets timers and facing-based frame
+0x060235dc func anim_SetupTween2Seg hand sets one-segment interpolation entries from start to end using fixed-point divide (was anim_SetupLinearTween)
+0x06023a6c func anim_SetupTween3Seg hand sets three-segment interpolation table using fixed-point divides between keyframes
+0x06023afe func anim_SetupTweenRanged hand builds two-segment tween scaled by frame count, adjusts timers
+0x06023bd6 func anim_RestartTween hand re-runs tween setup with saved keyframes after starting animation
+0x06023c1e func fighter_StartKnockdownAnim hand starts down/knockdown animation by state, sets timers via tween setup
+0x06023cf4 func fighter_StartKnockbackSlide hand computes direction to opponent, knockback velocity vector with clamping, starts slide
+0x06023f28 func fighter_CheckTweenTimeout hand marks flag near end of tween, starts ranged tween on queued command, sets state 0x13
+0x06023fe4 func fighter_ResetToIdleAnim hand clears state flags, starts default animation from data, sets state 0
+0x0602425e func fighter_StartKnockbackAnim hand selects slide routine by type, computes frame count from velocity decay, extends tween
+0x060242fc func fighter_SetKnockbackDirTable hand sets slide vector components from opponent offset sign, table speed, starts motion
+0x06024414 func fighter_SetKnockbackToward hand computes normalized vector to opponent scaled by clamped speed, sets velocity and frames
+0x0602454c func anim_ExtendTween hand extends tween end time by delta frames and recomputes slope with fixed divide
+0x06024ba8 func fighter_SetGuardFlags hand sets state flags 0x78 and timers for guard stance
+0x06024bcc func fighter_StartGuardAnim hand picks animation id from fighter data by side, calls start, then sets guard flags
+0x06024c18 func fighter_TickStunTimer hand decrements stun counters, returns 1 when recovery countdown reaches threshold
+0x06024e28 func pad_GetRecentButtons hand scans circular input history (128 entries) backwards for entry with button bits 0x70
+0x06024e70 func pad_GetRecentButtonsAndDir hand scans input history for buttons 0x70 plus direction bits combined result
+0x06024eda func pad_GetDirectionBits hand calls helper and returns low nibble direction
+0x06024f04 func fighter_SelectMoveByInput hand picks attack animation id from tables using side, buttons, distance and facing comparisons
+0x06025028 func fighter_GetSideAndCloser hand computes 3D distance vectors between fighters, sets bit 1 if opponent nearer to other than self
+0x0602598c func fighter_UpdateGuardMeter hand increments or decays guard counter by state, at 0x78 queues recovery command
+0x060259fa func fighter_InitBothStartAnims hand for both fighters starts initial animation from data and sets flags
+0x06025a68 func fighter_ClearBufferLists hand zeroes lists of 16-bit buffers per slot, preserving two bytes of state
+0x06025abc func fighter_SetInitialLife hand stores per-fighter 16-bit value from option table or mode-dependent bytes into fighter struct (was ai_SetFighterLevel)
+0x06025c90 func seq_CopyEntryWords hand copies two words at offsets 4 and 8 between structs
+0x06025c9a func txt_InitSequence hand initializes caption/script sequence state from table pointer indexed by id, timer 0x14
+0x06025cba func txt_CountEntriesWithId hand counts 0x14-byte list entries matching id across eight lists enabled by bitmask
+0x06025d06 func txt_PlayNthEntryWithId hand finds nth entry matching id across lists, copies it and calls sound/play helper
+0x06025df8 func vdp2_QueueTextUpload hand calls transfer helper with label pointer to push text map to VDP2
+0x06025e00 func strchr hand returns pointer to first char equal to value in string, or null
+0x06025e1a func vdp2_DrawTextLines hand fills text map with blank, splits string on newlines, writes 2x2 tile quads per character, queues upload
+0x06025f26 func vdp2_ClearTextMap hand zeroes text map halfwords and queues upload
+0x06025f40 func txt_InitScrollList hand sets list head pointer and zero timer, skips to last negative-flag entry
+0x06025f58 func txt_TickScrollTimer hand counts down timer then draws next text entry via vdp2_DrawTextLines and reloads timer
+0x06025fb0 func fight_StartRoundEndPoses hand clears text, inits sequence, starts winner and loser animations for both fighters by result
+0x0602607c func txt_InitScriptReader hand sets up byte script reader: length from first two bytes, data pointer, cursor reset
+0x060260b4 func fighter_ClearLowNibbleBoth hand clears low nibble of byte 0xb on both fighter structs
+0x060260e4 func txt_StepScript hand advances script cursor, handles command bytes by matching table entries, clears fighter nibbles at end
+0x06026156 func txt_UpdateSequence hand 4-state sequence machine: start entry, run script and scroll text, wait, countdown to idle
+0x0602622c func fighter_SelectFollowupMove hand picks follow-up move command from table by input, distance and opponent state
+0x06026340 func fighter_SelectMoveFlagsByType hand looks up move type from table, returns command with flag constant chosen by type and side
+0x0602639c func pad_ResolveGuardBits hand provisional: compares direction/button bit masks of two input words, returns code for guard or move class
+0x06026448 func input_UpdateButtonAges hand for 16 button bits, records frames since last press into array, returns mask of recent presses under 13 frames
+0x06026494 func input_ScanHistoryForRelease hand scans input history for matching neutral/release entry, sets command 0x20 and moves cursor to end
+0x06026590 func input_ParseMoveChain hand matches input history against combo chain table of 8-byte entries, returns chosen command or chain state
+0x06026878 func input_SelectAttackCommand hand picks attack command by button bits, facing, guard state and move tables, writes command word
+0x06026a64 func input_HistoryHasFlag08 hand scans back n input history entries for flag 0x8000000
+0x06026aa2 func input_HistoryHasFlag10 hand scans back n input history entries for flag 0x10000000
+0x06026ae0 func input_HistoryHasFlagSequence hand scans back for flag 0x4000000 then flag 0x2000000 within n entries
+0x06026b4a func input_ParseCommandMain hand main command parser: walks input history, checks button/direction flags against per-fighter move tables, writes fighter command word
+0x06026f92 func input_FinalizeCommand hand builds command word from direction, button and move-table lookup, writes to fighter command with default flags
+0x060270dc func input_ParseCommandSimple hand alternate parser scanning recent history for button edges, falls back to default or guard command
+0x0602728c func input_UpdateFighterCommand hand per-fighter entry: chooses parser (chain, main, simple, replay) by state flags and writes command word
+0x06027418 func bit_FindHighestSet hand returns 0x1f minus shift count of highest set bit under mask
+0x06027432 func pad_RemapButtonBits hand maps 16 pad bits through halfword table, returns packed remapped and raw bits
+0x06027468 func pad_GetHighestButtonIndex hand masks/shifts pad bits and returns index of highest set bit minus 0x16
+0x06027488 func input_ClearHistory hand zeroes 128-entry input history for one player and sets button age arrays to 0xd
+0x060274ee func input_ClearHistoryBoth hand clears input history for both players and a counter
+0x06027502 func pad_CopyButtonConfig hand copies 8 button mapping bytes from selected config table into player slot
+0x06027532 func pad_CopyButtonConfigBoth hand copies button config for both players
+0x06027578 func pad_LoadButtonMap hand copies 8 byte button map from table, 8 selects default for player, returns index times 4
+0x060275a4 func pad_InitButtonMaps hand resets map header and fills four 8-byte default button maps then copies configs
+0x060275d0 func input_PushPadFrame hand converts pad bits via button map into history entry with edge bits for new presses, handles replay or CPU
+0x060276d6 func stub_060276d6 hand clears two globals to zero
+0x06027714 func pad_UpdateSystemRepeat hand provisional: reads pad 1 words, tracks repeat/hold state counters for start-button style presses with flag bit 0x40
+0x060277ae func pad_UpdateEdgeBits hand if pad type is 2 (digital) shifts inverted button word into history and computes newly pressed bits
+0x060277de func pad_PollBothPads hand updates edge bits for both players on two pad sets, runs system repeat, then input push if not paused
+0x06027846 func input_PushBothPads hand pushes pad frame into history for player 0 and 1 and increments frame counter
+0x06027868 func input_FlushHistory hand saves pad bytes, runs input_PushBothPads repeatedly with zero input, restores frame counter and pad bytes
+0x060278f2 func pad_BothPadsDigital hand returns 1 if both pad structs report type 2
+0x0602792c func fighter_SetStartSides hand computes quadrant from angle helper for both fighters, stores offset and side index
+0x060279b0 func fighter_UpdateOpenFlag hand provisional: sets byte 8 when opponent idle and flags permit, depending on guard/attack frames
+0x06027a60 func input_MatchMoveTable hand walks move table entries by type, matches direction or button sequences in history, returns command id
+0x06027b2c func input_MatchButtonSequence hand matches sequence of button masks backward through 128-entry history within frame limit
+0x06027bfc func input_MatchDirectionSequence hand matches direction nibble sequence backward through input history with hold counts
+0x06027ce0 func fighter_SetCommandAndStart hand clears chain entries, sets command, resets fields, calls state handler by type, sets recovery frames
+0x060282c4 func input_ClearChainEntries hand zeroes eight halfword fields of chain struct for player
+0x06028328 func fighter_SetHitReactionTable hand fills five halfword reaction ids by hit flags and frame count (was fighter_SetHitLevelTable)
+0x06028398 func pad_UnpackRecords4 hand unpacks four 8-byte records from words into fields, flags nonzero
+0x06028400 func pad_ClearRecords4 hand zeroes four record halfwords and flag
+0x0602841a func fighter_LoadChainEntries hand copies count words into chain struct halfword pairs (frame, command) for player
+0x06028458 func fighter_LoadMotionSegments hand builds 16-byte segment table from motion data in reverse order with accumulated frame times
+0x060284ec func fighter_FireScheduledEvents hand compares eight scheduled frame/event pairs to current frame, fires event call when due and clears slot
+0x06028592 func fight_UpdateFighterStates hand per-fighter state handler dispatch, event firing, KO check, timer decrements, then sets distance flags
+0x0602879c func camera_UpdateFollowFighters hand per-fighter camera/matrix setup via matrix push/rotate helpers, angle clamped with slew limits
+0x06028e12 func fighter_ComputeRootOffsets hand computes root-bone offsets via matrix helpers for fighters with height, stores deltas
+0x06028f34 func fighter_TranslateBy hand adds xyz delta to fighter position fields and all child nodes in linked list, adjusts height tracking
+0x06029006 func anim_StartMotionByFrames hand builds one or two-segment tween table for frame count from motion data keyframes
+0x06029154 func curve_EvalNegativeIndex hand if param negative, looks up keyframe curve table and interpolates value with fixed-point math
+0x0602921c func arena_ClampMoveToBounds hand clamps 2D position to rectangular bounds along motion direction, returns edge code 1-4 and new x,z
+0x060292ea func fighter_ClampToArenaBounds hand rotates movement by facing, clamps via arena_ClampMoveToBounds, stores wall-contact code at byte 7
+0x060293d4 func slide_InitFixedSpeed hand initializes slide effect struct with speeds from two fixed shifts and origin from fighter position
+0x0602942c func slide_InitSquareDecel hand inits slide struct with deceleration from step count squared, linked fighter position, frame count
+0x060294a8 func slide_InitDistanceTime hand inits slide struct from distance and time using fixed divides, half-rate velocity
+0x0602953c func slide_InitFramesVelocity hand inits slide struct velocity from frame count and divisor, position copied from fighter
+0x06029594 func slide_Step hand advances slide one frame: reduces velocity, updates position or fighter offsets, returns 1 and zeroes struct when finished
+0x06029634 func slide_InitTowardOpponent hand computes direction to opponent, speed from table by state, fills slide struct with xz velocity and frame count
+0x06029808 func anim_SampleRefPositions hand for each listed anim id starts animation, runs matrix helpers and stores resulting position pairs in per-player table
+0x0602989e func math_SignClassifyBits hand builds 6-bit mask of sign/magnitude comparisons between two ints (negatives, compare, half-value tests)
+0x060298f4 func camera_SetupFighterViews hand per fighter: matrix setup via translate/rotate helpers, opponent offset projected, view angle class stored, world pos to screen
+0x06029b80 func fighter_TurnTowardOpponent hand computes angle to opponent via matrix helpers, rotates fighter Y by table-limited turn rate
+0x06029d74 func fighter_TurnTowardTarget hand rotates fighter Y angle toward target position using sine/cosine test and per-state turn rate table
+0x06029e98 func cmdseq_ClearAll hand clears active and length fields for each command sequence slot in table
+0x06029eb4 func cmdseq_ReadNextStep hand decodes next packed byte: low 5 bits duration, high 3 bits value, escape extends duration
+0x06029eea func cmdseq_StartForPlayer hand finds sequence by id in per-character table and initializes player's playback slot, else clears it
+0x06029f82 func cmdseq_UpdateAll hand per player advances sequence frame counter, reads next step or clears fighter flag bits when done
+0x0602a034 func fighter_SetMotionState hand sets fighter state and anim, resets frame counters, applies mode specific counters and flags
+0x0602a0ec func fighter_LoadMotionHeader hand loads motion header pointer, frame data, start position fixed divide into fighter struct, clears accumulators
+0x0602a156 func fighter_ApplyFacingToPosition hand rotates fighter position by facing and offset matrix, stores facing angle and refreshes
+0x0602a34a func fighter_AlignToOpponentDirection hand computes angle from opponent offset, rotates position matrix, stores new facing, updates fighter
+0x0602a4aa func fighter_FaceOpponentAndRealign hand angle toward opponent position, rotates matrices, stores facing angle and updates fighter state
+0x0602a5a8 func fighter_FaceTargetRealignPos hand near duplicate of facing realign routine using second set of helpers (was fighter_FaceOpponentAndRealign_2)
+0x0602a718 func fighter_ApplyPositionMode hand dispatches position handling by low three bits: keep, face opponent, or rotate and recompute position
+0x0602a7dc func fighter_RecomputePositionFromFacing hand rotates stored position by facing angle matrix, writes new x z and facing history
+0x0602a898 func fighter_QueueStateRequest hand filters requested sub-state, clears on attack end flag, stores request byte unless value is four
+0x0602a8e6 func fighter_StepMotion hand advances motion frame, interpolates position fixed point, dispatches state handler, applies blend or knockback matrices
+0x0602aa74 func fighter_TailCallStateHandler hand tail calls handler with fighter pointer and motion struct for given player
+0x0602aa90 func fighter_GetPositionVectors hand passes three offset pointers inside fighter struct to helper for given player
+0x0602aaf0 func anim_ResetPlayback hand resets keyframe stream pointers and cached values for all position and angle tracks
+0x0602ab9e func anim_SeekToFrame hand advances all track streams from old frame to target frame decoding packed deltas
+0x0602aca0 func anim_SetFrame hand sets playback frame with fraction, rewinds or seeks as needed, clamps at end, interpolates fractional part
+0x0602ad04 func anim_CopyPlayerBoneTransforms hand copies per player stored transform values into linked bone list nodes by node type
+0x0602ad7c func anim_BlendAngle hand fixed-point weighted blend of two angles, using 16.16 or 8 bit precision by difference size
+0x0602adea func anim_InterpolateTracks hand blends current and next keyframe values for all position and angle tracks by fraction
+0x0602ae84 func anim_BlendPositionOffsets hand copies three offset vectors then blends them by two weights across tracks
+0x0602aee8 func anim_BlendAngleTracks hand blends angle tracks of player's animation by two weights
+0x0602af30 func anim_CommitBlendedValues hand copies computed next values into current slots for all position and angle tracks
+0x0602af78 func fighter_ClearRequestIfAngleFar hand clears player request bytes when angle difference exceeds range thresholds
+0x0602b07c func anim_StartMotion hand parses motion header from table for state: track counts, flags, stream pointers, then sets frame zero
+0x0602b234 func anim_RewindToStart hand sets player animation to frame zero
+0x0602b24e func anim_SetFrameClamped hand sets player animation frame, negative values clamped to zero
+0x0602b26e func anim_GetPositionTrackValues hand copies three current position track values to output vector
+0x0602b292 func anim_GetBaseTrackValues hand copies three base track values for player to output vector
+0x0602b2b6 func anim_GetOffsetFromPosition hand gets position, calls helper with output, passes x z deltas to angle helper
+0x0602b2ea func chr_GetTransformedDeltaAngle hand reads fighter position from table, transforms via 0602b480, calls move callback with delta (was chr_MoveByTransformedDelta)
+0x0602b34c func chr_GetBoneChainDeltaAngle hand like b2ea but uses bone-chain transform 0602b4fe, calls callback with delta (was chr_MoveByBoneDelta)
+0x0602b3a4 func chr_GetBoneWorldPos hand loads fighter position, calls bone-chain transform writing result to param_2
+0x0602b3dc func chr_GetBoneWorldPosVec hand copies fighter xyz from table into param_2 then calls bone transform
+0x0602b400 func chr_GetLocalDeltaVec hand transformed point minus fighter position (y zeroed), passed to callback
+0x0602b480 func math_TransformPointByAngles hand push matrix, translate, rotate three axes by fighter angles, transform point, pop matrix
+0x0602b4fe func math_TransformPointBoneChain hand matrix push, translate, rotations per bone chain, transform point, pop matrix
+0x0602b61c func chr_GetJointPositions hand matrix transform then reads two joint xyz triples from object structure
+0x0602b69c func loadslot_InitAll hand sets two load slots to 0xff/0xff/0/0
+0x0602b6be func loadslot_Clear hand resets one load slot entry to 0xff,0xff,0,0
+0x0602b6d4 func loadslot_SetFlags hand sets two flag bytes of slot from boolean
+0x0602b6ec func loadslot_FindFreeBuffer hand chooses load buffer pointer from slot flags (was loadslot_SelectBufferAddr)
+0x0602b742 func cd_StartFileLoad hand reads file sectors into buffer via GFS-style calls, hangs if size mismatch (was cd_LoadFileToBuffer)
+0x0602b79e func thunk_cd_IsTransferDone hand thunk to function at 06021f46 polling transfer state
+0x0602b7a4 func loadjob_SetupChar hand stores three request bytes, state 0, returns 1
+0x0602b7b8 func loadjob_StepChar hand state machine loading character data files per request, calls b742
+0x0602b88a func loadjob_SetupStage hand stores stage index in request, state 0
+0x0602b898 func loadjob_StepStage hand state machine loading stage file via b742 and transfer wait
+0x0602b924 func loadjob_SetupMotion hand stores fighter, slot, side; computes table pointer, calls allocator
+0x0602b972 func loadjob_RelocateFighterData hand after callback true sets three header pointers and copies data (was loadjob_ApplyMotionPointers)
+0x0602b9cc func loadjob_SetupFighter hand stores four params, state 0, returns 1
+0x0602b9e4 func loadjob_StepFighter hand 8-state loader sequencing motion setup and callbacks
+0x0602baac func vdp_StartTextureLoad hand calls allocator with buffer, stores result pointer (was vdp_AllocTextureBuffer)
+0x0602bac0 func vdp_UploadTextureBuffer hand when callback done, calls two upload functions with buffer
+0x0602baf6 func texload_SetupSlot hand marks slot active, stores source pointer from table
+0x0602bb22 func texload_StepSlot hand 3-step state machine uploading slot data, DMA copy
+0x0602bbe2 func texload_SetupAll hand initializes texture load request and clears state
+0x0602bbfc func texload_StepAll hand state machine loading textures, allocating, two buffers
+0x0602bcd0 func cd_ReadTocInfo hand reads CD TOC, counts data tracks, stores first/last track values
+0x0602bd28 func cdda_UpdateFade hand per-frame countdown of fade timers, stops BGM at zero
+0x0602bdb8 func cdda_PlayTrack hand starts CD audio track range from table, sets volume/pan by stereo setting
+0x0602be5e func cdda_PlayTrackA hand wrapper calling cdda_PlayTrack with fixed track data, loop 0
+0x0602be64 func cdda_PlayTrackB hand wrapper calling cdda_PlayTrack with fixed track data B
+0x0602be6a func cdda_PlayTrackC hand wrapper calling cdda_PlayTrack with track data C, param 0xf
+0x0602be70 func cdda_PlayTrackD hand wrapper calling cdda_PlayTrack with pointer data D
+0x0602be76 func cdda_PlayTrackE hand wrapper calling cdda_PlayTrack with track data E
+0x0602be7c func cdda_PlayTrackF hand wrapper calling cdda_PlayTrack with track data F
+0x0602be82 func cdda_PlayTrackFromTable hand picks track entry via two index bytes, plays with param 0xf
+0x0602beac func cdda_Stop hand sets BGM state 0, mode 3, calls two stop functions
+0x0602bf1c func cdda_RestartVolume hand resets fade counters, calls function, reapplies volume
+0x0602bf5c func thunk_cdda_Stop hand thunk duplicate of cdda_Stop (beac)
+0x0602bf60 func cdda_SetFadeCounters hand sets state 0 and counter bytes to 3
+0x0602bf6c func cdda_SetStereoMode hand sets volume bytes by mono/stereo flag, reapplies volume if playing
+0x0602bfb2 func table_FindEntryById hand scans 8-byte entries for id-1, null at negative terminator
+0x0602bfe8 func table_GetEntryValue hand returns field at +4 of found entry or 0
+0x0602c014 func cdctl_Reset hand clears two state bytes
+0x0602c020 func cdctl_Stop hand sets state by substate, calls update and reset
+0x0602c044 func cdctl_Request hand stores source pointer and params, state 1, only if idle
+0x0602c074 func cdctl_Cancel hand sets state to 2 for slot with index 0 or less
+0x0602c09a func cdctl_Update hand runs finish on state, dispatches substate handler via table
+0x0602c0d0 func cdctl_Finish hand state 1 or 2 completion, releases and updates substate
+0x0602c10c func cdctl_Release hand if substate 2-4 calls two library functions
+0x0602c336 func cdctl_IsIdle hand returns true when substate byte is zero
+0x0602c340 func audio_StartStream hand zero counter, call function with buffer params from struct
+0x0602c36e func audio_RewindStream hand reset countdown and buffer pointer, jump through pointer
+0x0602c3a8 func audio_FillStreamBuffer hand copies or zero-pads halfwords into ring buffer, returns done
+0x0602c434 func audio_ResetStreamPtr hand resets countdown and buffer pointer from slot array
+0x0602c448 func audio_ClearStreamBuf hand zero-fills longwords of buffer, returns 1
+0x0602c46c func sndbank_Reset hand clears bank id and active flag for two channels
+0x0602c47c func sndbank_Load hand sets bank for channel, loads up to three entries via callback
+0x0602c4d4 func sndbank_Free hand frees up to three loaded entries of channel bank via two callbacks
+0x0602c52c func sndbank_PlayEntry hand plays entry of channel bank, entry stride 0xc
+0x0602c5ac func sndbank_CountSetA hand counts nonzero entries (max 3) in list A of bank
+0x0602c5cc func sndbank_CountSetB hand counts entries until zero in list B of bank
+0x0602c5e6 func sndbank_CountTotal hand sum of counts from set A and B
+0x0602c604 func sndbank_PlayIndex hand plays indexed entry from list A then list B
+0x0602c658 func mem_ClearBytes hand zero-fills byte buffer of given length
+0x0602c67e func thunk_strcpy hand thunk copy of strcpy
+0x0602c688 func strcpy hand copies NUL-terminated string
+0x0602c694 func str_PrefixEqual hand returns 1 if first string is prefix of second
+0x0602c6b4 func str_PrefixEqualNoCase hand case-insensitive prefix compare
+0x0602c6f2 func gfs_OpenByNameUpper hand uppercases name then calls name-to-id and open
+0x0602c734 func gfs_NameToIdUpper hand uppercases name, calls GFS lookup and open callback
+0x0602c77a func gfs_GetFileSize hand file info call, returns (sectors-1)*sectorsize+last size
+0x0602c7c0 func fileslot_ClearAll hand clears all 0x64-byte file slot entries, returns 0x60
+0x0602c7e6 func fileslot_FindFree hand finds free slot of 10, hangs if none
+0x0602c81a func pcmslot_Init hand copies name, resolves file via gfs lookup, initializes 0x64-byte stream slot fields to defaults
+0x0602c8ae func pcmslot_Reset hand closes slot handle and clears state fields
+0x0602c8f8 func pcmslot_FindByName hand uppercases name, returns slot index with matching id or -1
+0x0602c956 func pcmslot_StartPcmStream hand allocates slot, opens stream, starts playback, busy-waits on status
+0x0602ca50 func pcmslot_GetBufferAddr hand returns buffer pointer selected by slot flag byte
+0x0602ca62 func pcmslot_StartOrReuse hand finds or inits slot by name, configures and starts stream
+0x0602cbb4 func sound_SelectChannelByType hand provisional: calls setup, compares type with two constants, hangs on mismatch
+0x0602cc28 func pcmslot_SetFlagByName hand finds slot by name, stores flag byte, calls update
+0x0602cca8 func pcmslot_ClearTailBuffer hand zero-fills remaining buffer when residual count negative
+0x0602cce0 func pcmslot_UpdateAll hand per-frame state machine over ten stream slots, refills buffers, handles end
+0x0602ce98 func pcmslot_ResetStates hand resets non-looping slot states, rewinds active slot streams
+0x0602cf08 func pcmslot_StopAll hand calls sound library then resets slot states
+0x0602cf16 func pcmslot_StopAllAndBgm hand stops BGM via cdda_Stop thunk and all slots, then call with 0
+0x0602cf32 func pcmslot_ReleaseAll hand stops BGM and closes every active slot, final call with 0
+0x0602cf8c func pcmslot_ResetByName hand finds slot by name, resets it if found
+0x0602cfd4 func pcmslot_ResetByNameAndStop hand resets slot by name then calls function with 0
+0x0602d018 func pcmslot_IsPlayDone hand returns 1 when slot finished or not found, else 0
+0x0602d06c func namelist_Init hand clears eight 0x18-byte name entries and count
+0x0602d08c func namelist_FreeAll hand closes all used name entries, clears count
+0x0602d0de func namelist_Alloc hand finds free entry of 8, copies name, increments count, hangs if full
+0x0602d142 func namelist_FindByName hand returns index of entry with matching name or -1
+0x0602d1a2 func namelist_OpenFile hand allocs entry, opens file by uppercase name, issues read via GFS-style calls
+0x0602d29a func namelist_PollClose hand closes entries whose reads completed, returns 1 when all done
+0x0602d310 func sys_CallWithConst hand calls library function with one constant argument
+0x0602d32c func fs_OpenAndSetDir hand opens by param_2, sets with param_1, returns handle
+0x0602d350 func fs_SelectDirByIndex hand calls setup then opens one of two directories, stores handle
+0x0602d3c0 func fs_ChangeDirAndCall hand opens directory then calls function with param
+0x0602d3d4 func buf_InitDesc hand sets descriptor flag 1, size and pointer fields
+0x0602d3de func fs_InitSystem hand inits name list, four buffer descriptors, library init calls, directory handles to -1
+0x0602d44e func scrname_RegisterUnique hand uppercases name stem to 17 chars, registers in list of 10 if not present
+0x0602d55c func sys_ResetAndRestartA hand repeated library call, sets register constant, vblank setup calls, installs callback A (was sys_ResetDisplayA)
+0x0602d5b6 func sys_ResetAndRestartB hand same as ResetDisplayA but installs callback B (was sys_ResetDisplayB)
+0x0602d650 func math_Length2D hand fixed-point square of two values, sum, sqrt, divide
+0x0602d682 func math_NormalizeVec3 hand vector dot, sqrt, divide, scales xyz to unit
+0x0602d6cc func cam_SetAnglesFromObj hand sets two values from object or global camera object
+0x0602d6f8 func cam_PushLookMatrix hand push matrix, apply transform, translate by negative position, call, pop
+0x0602d73c func math_NormalizeVec3ToLength hand dot, sqrt, scale to given length, xyz output
+0x0602d7c4 func fight_InitPlayerFromSelection hand fills menu cursor/option globals by mode and setup, sets 3D cursor draw (was menu_InitCursorState_2)
+0x0602d90c func fight_DispatchFighterStates hand per-fighter loop, picks state handler from state id 1..N via dispatch calls, game/pause check (was fight_UpdateFighterStates_2)
+0x0602e16c func fight_GetFighterWordByIndex hand returns longword from table at index
+0x0602e1b4 func input_CheckFrameCount hand compares counter against per-player table limit, returns bool
+0x0602e214 func inputbuf_ClearPlayer hand clears per-player entries (stride 0x18) of input history buffer
+0x0602e23e func inputbuf_ComputeEdges hand computes pressed/released button bits from previous and current frame, stores into history
+0x0602e3b4 func cmdparse_CharToButtonMask hand maps command char (digits, G,K,P) to button/direction mask
+0x0602e406 func cmdparse_ParseString hand parses move command string with parentheses, brackets, braces into 12-byte entries
+0x0602e624 func cmdparse_SetupMove hand parses move command string for table index, resets sequence state
+0x0602e68a func cmdparse_InitFromMoveWord hand sets sequence source pointer from move word, parses first command
+0x0602e734 func cmdparse_StepSequence hand emits next input byte of parsed command, handles hold counters and modes 0-2
+0x0602e8dc func cmdstate_Clear hand zeroes 30-longword command state struct
+0x0602e93a func fighter_InitState hand clears large fighter struct, sets side/id, init sub-structs, sets default constants 0x14,0x2d,0x50,0x23
+0x0602eae4 func fighter_UpdateAttackLevel hand sets per-fighter hit level 1-3 from attack category switch (0-12), tracks guard and timing flags
+0x0602f3cc func match_ResetStatsBlock hand zero-fills per-player stats struct in versus/mode 4 or flagged, resets fields
+0x0602f54e func match_UpdateAttackStats hand sets high/mid/low attack bits 0x20/0x40/0x80 and increments per-level counters
+0x0602fb70 func fighter_GetStateShortA hand returns short field from fighter struct
+0x0602fb78 func fighter_GetStateShortB hand returns same short field as GetStateShortA
+0x0602fb80 func ai_StepApproachAttackState hand 3-state machine for fighter outcome using result callback, sets state words 3 (was ai_StepOutcomeState)
+0x0602fc48 func match_CountOutcomeStats hand increments per-state counters (states 5, 0x12, 0x14, 0x15) and distance-band counter
+0x0602fe40 func ai_ResolveFinishState hand handles states 0x17-0x1d, sets timers 0x78/0x5a, returns result
+0x06030654 func ai_StepKnockdownState hand handles states 0x1b, 0x1d, 0x1f with mode switch 1-5, updates counters
+0x06030780 func ai_StepBumpAttemptCounters hand increments two counters once then clears state when state word is not 0x20 (was ai_StepRoundCounter)
+0x060307d2 func ai_DecideAction hand large per-frame decision, checks guard bits, state 0x16/0x1c, calls 060313a4
+0x06030a80 func ai_StepGuardState hand state 0x18 handler, counter pattern vs mask sets guard flag bit 2
+0x06030b48 func ai_StepState24 hand clears state words unless state is 0x24
+0x06030b62 func ai_CheckGuardBreak hand counts state 7 frames, evaluates guard-break conditions, sets flag bit 2
+0x06030c8c func ai_StepState0E hand clears state words and sets timer 0x78 unless state is 0xe
+0x06030cc2 func ai_StepState06 hand clears state words unless state is 6
+0x06030cf8 func ai_StepState16Counter hand increments counter when state 0x16 with substate 6 and flag set, else clears
+0x06030d36 func ai_StepState14Timer hand handles state 0x14, 10-frame timer, checks states 0x19-0x1b
+0x06030e9c func ai_UpdateAttackBits hand sets flag bits 4 or 8 on fighter from opponent attack flags 0x40/0x80
+0x06030fc0 func ai_StepState25Timer hand state 0x25 countdown, sets 0x3c timer, increments counter then clears
+0x0603100c func ai_StepActionTimeout hand ends action when counter exceeds limit, sets flags, returns 1/5/6 on conditions (was ai_StepRoundEnd)
+0x060311ec func ai_StepState1E1F hand clears state words unless state is 0x1e or 0x1f
+0x0603120a func ai_StepApproachGuard hand state 0x19/0x1a checks, guard flags, sets opponent flag 1 on random roll
+0x060313a4 func ai_CheckAttackOpportunity hand complex decision of attack/guard from distance, timers, flags, uses random
+0x06031730 func ai_SetStanceState hand AI sets state 0x13 substate by param 0..3 from stance and range, calls FUN_060319fc
+0x06031872 func ai_ClassifyRangeBands hand classifies two distances against range band table, then ai_SetStanceState
+0x060319fc func ai_ChooseNextAction hand AI state machine picks next action by substate, sets action words and guard/attack flag bits
+0x06031fb8 func ai_ChooseAttackOrGuard hand AI decides attack vs guard vs throw, sets state words and input bits
+0x0603257c func ai_StateIdleStart hand provisional: AI action state machine start/idle, sets timers at +0x10..0x18 and input flags
+0x06032688 func ai_CheckThrowOpportunity hand tests opponent state and distance, sets state 6, returns 1 if throw chosen
+0x06032786 func ai_MainDecision hand large AI per-frame decision using fighter state, opponent tables and random
+0x06032dc6 func ai_StateApproach hand AI approach/move state with substates 0..5, uses fighter flag bits
+0x0603300a func ai_ReadMoveQueue hand AI consumes queued move list entries at +0x68..0x74, resets states on empty
+0x0603314a func ai_StateWalkBack hand AI substates 0..2 choose direction 2 or 7, timer decrement then reset
+0x06033214 func ai_StateAttackWindup hand provisional: AI attack substates 0..3, sets action 5 or 9, state 0x16, input flags
+0x0603335c func ai_StateAttackRecover hand provisional: AI attack follow-up substates, increments counter, sets state 0x16 then 0xd
+0x060334d0 func ai_StatePlayCommandSequence hand AI plays command sequence via ai_ReadMoveQueue, sets state 0x1d
+0x060339d4 func ai_StateSpecialMove hand provisional: AI special-move state with position midpoint calc and input flags
+0x06033b82 func ai_StateWaitReact hand provisional: AI wait/react state compares timers, sets state 0x1f or substate 2..3
+0x06033e84 func ai_StateGuardStep hand AI guard substates 1..4 with timers, sets input bit 0x20
+0x06033fe0 func move_HasLowCommand hand provisional: scans move chain entries, returns 1 if command type 0..2
+0x060340ac func move_LoadCommandInputs hand reads move table entries, stores input bits and types at fixed offsets
+0x060341c4 func ai_EncodeStickDirection hand loops 9 directions via helper, writes direction byte codes into input byte
+0x060342b8 func ai_GetMaxSkillLevel hand returns count minus 1 or half of short minus 1 by mode 4/5 (was ai_GetCharaLevelCount)
+0x060342e4 func ai_FillSkillParams hand fills 12 AI skill parameters through scaling helper calls
+0x0603439a func ai_SetSkillFromTable hand builds skill params from per-mode table rows, special case mode 7
+0x06034438 func ai_SetSkillFromFighterTable hand skill params from table row indexed by fighter number (was ai_SetSkillFromTable_2)
+0x06034494 func ai_SetSkillDefault hand skill params via two scaled values and ai_FillSkillParams
+0x060344f0 func ai_InterpSkillParams hand linear base plus slope times level skill params, sets flag to 1
+0x060346e2 func ai_SetSkillMax hand sets all skill params to 100 and mode globals 4,9,1
+0x06034724 func ai_SetSkillPassive hand provisional: sets low skill values (0,4,8) and flags in table
+0x06034756 func ai_SetSkillAggressive hand provisional: sets mixed skill values and flags 1 in table
+0x0603478a func ai_InitSkillByMode hand clears flags then dispatches to skill setters by mode 0..5
+0x060348c4 func ai_LoadRangeBands hand copies six range band values from per-fighter table into fighter struct
+0x060348ee func ai_ComputeRangeAndTiming hand classifies distance 1..3 and timing 1..3 from frame data
+0x06034baa func ai_FilterRepeatedMoves hand checks repeated last moves among history, counts matching entries (was ai_CheckRepeatMove)
+0x06034cb0 func ai_GetMoveCommandMask hand selects move table row by state and returns command bit mask
+0x06034ec8 func ai_QueueCommand hand stores command args, validates via mask, filters by fighter id
+0x06034fe4 func ai_QueueCommandAuto hand wrapper computes range with ai_ComputeRangeAndTiming then ai_QueueCommand
+0x0603500c func ai_ChooseAttackCommand hand provisional: picks attack command by distance and skill flags, delegates to ai_CanStartAttack
+0x06035220 func ai_CanStartAttack hand checks timers and flags, returns nonzero if attack command can start
+0x060354c8 func ai_TryCloseInAttack hand picks approach attack by range, queues command, sets state 0x16
+0x0603556e func ai_QueueCommand_1_1_3 hand provisional: queues command (1,1,3) via ai_QueueCommand, returns 1
+0x0603557e func ai_TryLowAttack hand provisional: if state 0x25 and timing ok queues command (1,3,0xc)
+0x060355f0 func ai_TryQueueMidAttack hand provisional: gated by timers, queues command 0xb or 9 via ai_QueueCommandAuto
+0x0603573c func ai_TryStartWalkBack hand if stamina values low sets state 0x1a, calls helper, returns 1 (was ai_TryStartRecovery)
+0x0603579c func ai_TryQueueRangedAttack hand provisional: queues command 5 when range conditions hold
+0x060358d0 func ai_TryStartThrow hand provisional: checks stance and distance, sets state 0x1b if timing allows
+0x060359c2 func ai_TryStartCounter hand provisional: queues command 6 and sets state 0x1d when conditions hold
+0x06035a8a func ai_TryQueueCommand7 hand queues command 7 in state 0x19/0x1a when timing allows
+0x06035b4c func ai_TryQueueCommand8 hand queues command 8 if ai_CanStartAttack fails and flags set
+0x06035b96 func ai_TryGuardBreak hand provisional: sets input bits 0x40 and 0x10 when conditions hold, clears flag
+0x06035c08 func ai_ClearState3 hand zeroes three words of AI state
+0x06035c12 func ai_StepTimerState hand small state machine 0..3 with countdown of 4 and copy value
+0x06035c56 func ai_ClearState5 hand zeroes five words of AI state
+0x06035c64 func ai_ApplyActionToInput hand maps action id 0..8 to pad input bits 0x20, 0x10, 0x80
+0x06035dc2 func ai_InitRangeThresholds hand loads per-fighter range values, computes distance class 2/3, initializes
+0x06035eac func ai_PickActionByDistance hand compares distance with threshold bands, sets action 1..5, calls ai_ApplyActionToInput
+0x06035fe8 func ai_GetFixedOrMinus1 hand returns table constant when flags set else -1
+0x0603601c func gfx_Expand1bppTo4bpp hand expands 1bpp font rows to 4bpp pixel words with color nibble, nested loops
+0x0603606c func math_VectorDiffCross hand provisional: subtracts point pairs from tables and computes cross product terms
+0x06036190 func math_FixedMulAccumA hand multiplies global A by constant 64-bit then shifts to 16.16 fixed
+0x060361ac func math_FixedMulAccumB hand same fixed multiply on second global
+0x060361b2 func math_SetAccumA hand stores param into global A
+0x060361b8 func math_SetAccumB hand stores param into global B
+0x060361cc func gbr_GetWorkField30 hand returns word at GBR+0x30
+0x060361d0 func matrix_PushStack hand provisional: pushes stack record 0x28, advances pointer at GBR+0x48, GBR+0x30 minus 0x24, likely slPushMatrix
+0x060361de func matrix_PushStackCall hand provisional: calls helper then pushes stack record like matrix_PushStack
+0x06036224 func sys_InitVideoMode hand masks mode param, calls many init helpers, sets flags
+0x06036360 func bits_InsertField hand builds mask from r1 widths by loops and merges field of r0
+0x060363c8 func bits_ExtractField hand shifts word left and right by widths in r1 to extract bitfield
+0x06036400 func math_Div64Software hand SH-2 software division loop using DIV1-style steps
+0x060364b4 func math_Div32Software hand SH-2 software unsigned divide with DIV1 steps
+0x0603655c func math_Div64SoftwareSigned hand signed 64 bit software divide returning longlong (was math_Div64Software_2)
+0x06036624 func math_Div32SoftwareLong hand unsigned divide returning longlong, zero divisor stores constant (was math_Div32Software_2)
+0x060366dc func jumptable_Dispatch hand indirect jump through table by r0, tail dispatch
+0x06036780 func mem_CopyWordsUnrolled hand copies r0 words from r2 to r1 unrolled by four
+0x060367d8 func math_ShiftLeftTable hand dispatches shift via jump table when shift count below 32
+0x06036898 func math_ShiftRightTable hand shift right dispatch by table, returns sign fill when count large
+0x06036a6c func math_ShiftRight21Short hand returns r0 shifted right 21 as short
+0x06036a7e func math_ShiftRight14 hand returns r0 shifted right 14
+0x06036a82 func math_ShiftRight12 hand returns r0 shifted right 12
+0x06036a86 func math_ShiftRight10 hand returns r0 shifted right 10
+0x06036a8a func math_ShiftRight8 hand returns r0 shifted right 8
+0x06036a9c func math_ShiftRight28Char hand returns r0 shifted right 28 as char
+0x06036adc func memmove hand overlap-safe byte copy, forward or backward
+0x06036be2 func softfloat_DoubleAdd hand double add aligning exponents with shifts
+0x06036bf0 func softfloat_DoubleAddCore hand double precision add, compares exponents, handles NaN and inf
+0x06036df2 func softfloat_DoubleAddSwapped hand swaps argument halves, calls softfloat_DoubleAdd
+0x06036eb0 func softfloat_FloatAdd hand single precision add, exponent mask compare, NaN return
+0x0603711c func softfloat_DoubleToInt hand converts double to integer by exponent shift
+0x060371a8 func softfloat_DoubleCompare hand double compare handling NaN and zero, returns bool
+0x06037250 func softfloat_IntToDouble hand normalizes integer, builds double exponent and mantissa
+0x060372a4 func softfloat_IntToFloat hand normalizes integer, rounds into single float
+0x060372fc func softfloat_FloatToInt hand converts single float to integer by exponent shift
+0x06037354 func softfloat_Wrapper hand thin wrapper calling helper at 06037364
+0x06037368 func strlen hand counts bytes until zero
+0x06037390 func hw_SetRegMasked hand updates shadow variable with mask or value, writes hw copy, sets flag
+0x060373bc func strcpy_2 hand string copy, word-aligned fast path else byte unrolled
+0x06037438 func jumptable_DispatchByte hand indirect jump via byte offset table
+0x060374cc func memset hand fills param_3 bytes with value
+0x060374e8 func strcpy_Aligned hand word-wise string copy checking zero bytes
+0x060a0e8c func aud_LockAcquire hand sets bit7 in lock byte, returns 0 if free else -1
+0x060a0e96 func aud_LockRelease hand clears lock byte, returns param
+0x060a0ea4 func aud_GetVolumeA hand returns value byte masked 0x7f
+0x060a0eac func aud_GetVolumeB hand returns second value byte masked 0x7f
+0x060a0eb4 func aud_SetVolumeA hand under lock sets value A (7 bits) in shadow and register
+0x060a0ede func aud_SetVolumeB hand under lock sets value B (7 bits) in shadow and register
+0x060a0f18 func aud_GetLevelA hand returns byte masked 0x7f
+0x060a0f20 func aud_GetLevelB hand returns byte masked 0x7f
+0x060a0f44 func aud_IsFlagBit0Clear hand tests bit0 clear in control byte
+0x060a0f4e func aud_IsFlagBit1Clear hand tests bit1 clear in control byte
+0x060a0f58 func aud_SetFlagBit0 hand locked set or toggle bit0 in control byte
+0x060a0f8c func aud_SetFlagBit1 hand locked set or toggle bit1 in control byte
+0x060a0fc8 func aud_IsFlag2Bit0Clear hand tests bit0 clear in second control byte
+0x060a0fd2 func aud_IsFlag2Bit1Clear hand tests bit1 clear in second control byte
+0x060a0fdc func aud_SetFlag2Bit0 hand locked set or toggle bit0 in second control byte
+0x060a100c func aud_SetFlag2Bit1 hand locked set or toggle bit1 in second control byte
+0x060a1044 func aud_GetTableEntry hand returns address of 4-byte table entry by index
+0x060a1098 func aud_CheckBothIdle hand returns 0 if both channels idle else -1
+0x060a10da func aud_CheckEitherActive hand provisional: returns 0 if either channel flag set else -1
+0x060a10f8 func aud_MergeStatusBits hand ORs status bits 0x30 and 0xffffffc0 by channel flags
+0x060a1118 func aud_WritePacketTail hand appends 7 byte packet to buffer, bytes 0xf1 0x25 and param
+0x060a1180 func aud_UpdateChannelSwitch hand toggles channel flags and writes packet by current index 0/1
+0x060a11e8 func aud_ClearRing30 hand fills 30 entries with 0xff at stride, returns -1
+0x060a1200 func aud_Init hand sets buffer pointers and stride, clears state variables (was aud_InitBuffers)
+0x060a1292 func aud_SetBuffers hand under lock stores buffer pointers and stride, clears ring
+0x060a12be func aud_EnqueueByte hand pushes byte into 32 entry ring buffer, returns -1 if full
+0x060a1312 func aud_TestStatusBit4 hand tests status bit mask 4, returns 0 if set else -1
+0x060a131e func aud_TestStatusBit2 hand tests status bit mask 2, returns 0 if set else -1
+0x060a134a func aud_SetStatusBit2 hand sets bit mask 2 in status byte
+0x060a1384 func aud_AdvanceCounter hand cycles counter 0..2 when flag 0x10 set, sets status bit0
+0x060a13ac func aud_DecodeNibbleStream hand reads nibbles from stream, dispatches handler table, counts entries
+0x060a144c func aud_FillBuffersBoth hand decodes two buffers unless channel bits masked
+0x060a14ae func aud_FillBuffersActive hand decodes buffers for channels whose flags are clear
+0x060a1524 func aud_ProcessQueue hand drains ring queue sending packets until threshold, toggles status
+0x060a15e0 func aud_ProcessQueueLocked hand locked variant draining queue then advancing counter
+0x060a1664 func aud_SendPacket hand waits bit0 busy, calls handler by type byte, writes data byte
+0x060a16c6 func aud_SetCtrlBit1 hand locked set or toggle bit mask 2 in control byte
+0x060a1706 func aud_SetModeBits4_5 hand locked set bits 4-5 of control byte, reject 2 or above 3
+0x060a1744 func aud_SetModeBits6_7 hand locked set bits 6-7 of control byte, reject 2 or above 3
+0x060a18d0 func aud_RunCommand hand validates index up to 0x10, runs command handler from table by type
+0x060a1e54 func table_SinLookup hand indexed table lookup with xor and add per top bits (was table_DecodeLookup)
+0x060a1e78 func table_CosLookup hand second variant of table_DecodeLookup with other tables (was table_DecodeLookup_2)
+0x060a1e9c func table_LookupPair hand returns two signed bytes from table by top bits
+0x060a5f74 func table_TanLookup hand table lookup with switch scaling result by 1, 2 or 4 (was table_DecodeSwitch)
+0x060a80d0 func math_Atan2 hand abs of args, sorts, loads DIVU regs 0xffffff00/10/14 and jumps by sign (was math_DivuSetup)
+0x060aa188 func math_Sqrt32 hand integer square root bit-by-bit, 16 iterations
+0x060aa1b4 func math_SqrtFixed hand calls math_Sqrt32, shifts left 8
+0x060aa1c0 func math_FixedMul hand 64-bit multiply returning 16.16 fixed middle bits
+0x060aa1cc func math_DivuStart64 hand loads DIVU regs 0xffffff00/10/14 and returns quotient reg 0xffffff1c
+0x060aa1e0 func math_Mul64Signed hand signed 32x32 to 64 bit multiply via partial products
+0x060aa1f0 func math_Sqrt64 hand integer square root of 64-bit value, two passes of 16 and 15 iterations
+0x060aa224 func math_MulHigh hand returns high 32 bits of 64-bit product
+0x060aa22c func sgl_LookAt hand builds view matrix from two points via DIVU/sqrt normalize, rotates Y then X, translates by -pos; like slLookAt
+0x060aa2f4 func sgl_CalcPointTable hand multiplies 3x4 matrix rows by vector with MAC accumulation, writes three results to param_4
+0x060aa320 func sgl_RotMatrixZ hand rotates current matrix columns 0,1 by sin/cos 16.16 args; like slRotZ core
+0x060aa398 func sgl_RotMatrixY_entry hand tiny prologue calling helper then falls into Y-axis rotation of current matrix
+0x060aa3a2 func sgl_RotMatrixY hand rotates current matrix columns 2,0 by sin/cos 16.16; like slRotY core
+0x060aa410 func sgl_RotMatrixX_entry hand tiny prologue calling helper then falls into X-axis rotation of current matrix
+0x060aa41a func sgl_RotMatrixX hand rotates current matrix columns 1,2 by sin/cos 16.16; like slRotX core
+0x060aa488 func sgl_InitMatrixStack hand resets matrix stack depth to 0 and loads identity 3x4 matrix at GBR+0x1c; like slInitMatrix
+0x060aa492 func sgl_PushUnitMatrix hand if depth<20 increments depth, advances matrix pointer 0x30 bytes and loads identity
+0x060aa4a6 func sgl_SetUnitMatrix hand loads identity into current matrix, optionally copying result when param_1 null; like slUnitMatrix
+0x060aa8b4 func sgl_PushMatrix hand copies current 3x4 matrix to next stack slot, depth<20; matches slPushMatrix
+0x060aa8e8 func sgl_PopMatrix hand decrements matrix stack depth and pointer by 0x30; matches slPopMatrix
+0x060aa8fc func sgl_SetMatrixTransposed hand copies 4x3 input into current matrix transposing rows to columns; like slLoadMatrix
+0x060aa918 func sgl_GetMatrixTransposed hand copies current matrix out in transposed layout; like slGetMatrix
+0x060aa938 func sgl_TransposeRotation hand zeroes translation column and swaps off-diagonal elements of current matrix (inverse rotation)
+0x060aa95c func sgl_MulMatrix hand 16.16 MAC multiply of current matrix by param_1 matrix; like slMultiMatrix
+0x060aaa68 func sgl_TranslateMac hand MAC of matrix row against vector args adding to translation; like slTranslate
+0x060aaab8 func sgl_ScaleMatrix hand multiplies matrix rows by three 16.16 scale factors; like slScale
+0x060aab28 func sgl_PushMatrixNoCopy hand increments matrix stack depth (max 20) and pointer, returns 1 else 0
+0x060aab44 func sgl_SetRotIdentity hand writes diagonal 0x10000 identity rotation block, optional output pointer, then updates current matrix (was sgl_SetScaleMatrix)
+0x060aab7c func sgl_GetTranslation hand copies translation column (offsets 0xc,0x1c,0x2c) of current matrix to param_1
+0x060aab8c func sgl_SetTranslation hand writes three args to translation column of current matrix
+0x060aab98 func sgl_MulVecMac3 hand three-iteration MAC loop of matrix row times vector into output; like slCalcPoint variant
+0x060aabbc func sgl_SetTvMode hand stores TV mode index, selects tables, SH-2 DMAC copies of 0x30 words, sets work area fields
+0x060aacdc func sgl_Unpack2bppTo16bit hand expands 2-bit pixels to 16-bit words with palette offset into param_3
+0x060aad0c func sgl_Unpack4bppTo16bit hand expands 4-bit pixels to 16-bit words with palette offset into param_3
+0x060aad3c func dmac_StartCh0CopyWide hand waits DMAC CHCR0, programs SAR/DAR/TCR, sets 0x1000100 in dest, starts DMA
+0x060aada0 func dmac_StartCh0Copy hand waits DMAC CHCR0 idle, writes SAR/DAR/TCR at 0xffffff80.., starts transfer DMAOR 9
+0x060ab03c func sgl_CopyInitTable8 hand copies 8 words from constant table into work area
+0x060ab78c func vdp2_SetFlagBitC0 hand ORs mask into 16-bit word at GBR+0xc0
+0x060ab796 func vdp2_ClearFlagBitsC0 hand ANDs word at GBR+0xc0 with mask and mirrors to register copy
+0x060ab7ac func vdp2_SetFieldCeHi hand sets upper nibble field of GBR+0xce shadow and writes register copy
+0x060ab7cc func vdp2_SetFieldCeLo hand sets low 2 bits of byte at GBR+0xce
+0x060ab7d8 func vdp2_SetFourWords hand stores four args into two 4-word tables (shadow and register copy)
+0x060ab7f8 func vdp2_SetPlaneAddrE8 hand merges args into shadow word GBR+0xe8, stores address at 0x1fc and nibble at 0xfd
+0x060ab81c func vdp2_SetBitsE0 hand sets low-half bits and clears high-half bits of word GBR+0xe0
+0x060ab82c func vdp2_SetByteE0 hand writes byte to GBR+0xe0
+0x060ab834 func vdp2_SetPatternBase16c hand stores value to param_1 and param_1>>1 into GBR+0x16c
+0x060ab840 func vdp2_SetPatternBase168 hand stores value to param_1 and param_1>>1 into GBR+0x168
+0x060ab84c func vdp2_SetField1ac hand masks and ORs value into word at GBR+0x1ac
+0x060ab85c func vdp2_SetMapAddrNbg0 hand stores address at 0x1fc, computes shift by size flags, derives map offset fields
+0x060ab9c0 func vdp2_SetMapAddrNbg1 hand same shift/map-offset computation using shadow 0xf4/0xea, address at 0x204
+0x060abb24 func vdp2_LoadColorTable8Tail hand copies 8 byte pairs shifted by mode flags into VDP2 table at +0x10
+0x060abb3e func vdp2_LoadColorTable8 hand calls helper with byte<<11, copies 8 byte pairs shifted by mode flags
+0x060abb94 func sgl_SetWorkPtr214 hand stores param to GBR+0x214 and >>1 to 0x17c, sets 0x1e0, calls FUN_060abbc8 twice
+0x060abbc8 func sgl_InitScrollParamBlock hand zeroes and sets 0x10000 scale entries in block pointed by r0 (scroll/rotation params)
+0x060abc04 func vdp2_SetCharSizeAndOffset hand masks param_2 into GBR+0x174, sets 0x176 and 0x270 offsets, iterates 4 NBG fields
+0x060abcd4 func sgl_SelectParamBlock hand sets GBR+0x1e0 to base or base+0x68 by param
+0x060abce4 func vdp2_SetWord170 hand stores 16-bit param at GBR+0x170
+0x060abcec func sgl_NegateMatrixColumn hand calls helper then negates elements 2,6,10 of current matrix
+0x060abd14 func vdp2_SetFieldFa2 hand sets bits 2-3 of byte GBR+0xfa
+0x060abd20 func vdp2_SetFieldFa6 hand sets bits 6-7 of byte GBR+0xfa
+0x060abd30 func vdp2_SetPair138 hand stores two words at GBR+0x138/0x13c
+0x060abd3c func vdp2_SetPair148 hand stores two words at GBR+0x148/0x14c
+0x060abd48 func vdp2_SetFieldFb0 hand sets low 2 bits of byte GBR+0xfb
+0x060abd60 func vdp2_SetFieldFb4 hand sets bits 4-5 of byte GBR+0xfb
+0x060abd80 func vdp2_SetFieldFa0 hand sets low 2 bits of byte GBR+0xfa
+0x060abd8c func vdp2_SetFieldFa4 hand sets bits 4-5 of byte GBR+0xfa
+0x060abd9c func vdp2_SetRegByteMasked hand ORs value into indexed byte masked with 0x30
+0x060abdb0 func vdp2_SetRegByteIndexed hand stores byte at table base plus index
+0x060abdbc func vdp2_SetField1a0Lo hand sets low nibble of word GBR+0x1a0
+0x060abdc8 func vdp2_SetField1a0Mid hand byte-swaps GBR+0x1a0, sets bits 4-5, swaps back
+0x060abddc func vdp2_SetField1a0Lo3 hand byte-swaps GBR+0x1a0, sets low 3 bits, swaps back
+0x060abdec func vdp2_SetBit1a0b5 hand sets bit 5 of word GBR+0x1a0
+0x060abe00 func vdp2_SetBit1a0b4 hand sets bit 4 of word GBR+0x1a0
+0x060abe10 func vdp2_SetPair130 hand stores two words at GBR+0x130/0x134
+0x060abe44 func vdp2_SetPair140 hand stores two words at GBR+0x140/0x144
+0x060abe50 func vdp2_SetScrollPos2f4 hand stores two scroll values at 0x2f4/0x2f8 and packed hi/lo at 0x154
+0x060abe60 func sgl_SetScrollWindowOrigin hand updates 16-bit offsets in current param block and adjusts deltas at 0x44/0x48
+0x060abe94 func vdp2_SetWindow0 hand packs x/y start/end into 0x180/0x184 doubling X if flag, clears 0x198; like slWindow
+0x060abeb0 func vdp2_SetWindow1 hand packs x/y start/end into 0x188/0x18c doubling X if flag, clears 0x19c
+0x060abecc func vdp2_SetRegByteIndexed2 hand stores byte at table base plus index
+0x060abed8 func vdp2_SetRegByte hand stores byte to fixed address
+0x060abee4 func vdp2_SetField1a4Lo hand sets low nibble of word GBR+0x1a4
+0x060abf04 func vdp2_SetField1a4Hi hand byte-swaps GBR+0x1a4, sets low nibble field, swaps back
+0x060abf2c func vdp2_SetField1a6Lo hand sets low nibble of word GBR+0x1a6
+0x060abf38 func vdp2_SetField1a6b4 hand sets bits at shift 4 of word GBR+0x1a6
+0x060abf5e func vdp2_SetField1aaHi hand sets high byte of word GBR+0x1aa
+0x060abf78 func sgl_InitZTable hand stores table pointer at 0x218, fills with 0xff000000, builds ramp of values
+0x060abff8 func sgl_UpdateScrollParam hand copies current matrix rows to param block, computes offsets and DIVU/MAC for rotation scroll
+0x060ac264 func vdp2_SetCycleEa hand stores OR of args at GBR+0xea then calls FUN_060ac334 update
+0x060ac270 func vdp2_SetCycleE9 hand stores OR of args at GBR+0xe9 then calls FUN_060ac334 update
+0x060ac27c func vdp2_SetCycleE8 hand stores OR of args at GBR+0xe8 then calls FUN_060ac334 update
+0x060ac288 func vdp2_SetCycleEb hand sets low nibble field of GBR+0xeb from param>>3 and arg then update
+0x060ac2b6 func vdp2_SetMapOffsetNbg3 hand stores address at +0x14, builds map offset word at +0x38
+0x060ac2d4 func vdp2_SetMapOffsetNbg2 hand stores address at +0xc, builds map offset word at +0x34
+0x060ac2e8 func vdp2_SetMapOffsetNbg1 hand stores address at +4, builds map offset word at +0x30
+0x060ac334 func vdp2_WriteMapByte hand writes map offset low bits from table into register byte pair
+0x060ac378 func sgl_QueueSetFov hand DIVU on angle, stores result to command queue entry 0xc and work area 0x68
+0x060ac3e4 func sgl_QueueSetCameraPos hand queues command 0x24 with negated xyz at queue pointer GBR+0x48
+0x060ac414 func sgl_PutPolygonSprite hand provisional: checks busy flags at 0x72/0x73, takes five shorts plus two args, builds sprite command
+0x060ac4d8 func sgl_QueueSetSpriteShift hand queues command 0x34 with value 1..7, stores shift at 0xac
+0x060ac504 func sgl_QueueEndMark hand calls helper, queues command 0x28 with pointer at 0x30, polls DMAC
+0x060ac57c func sgl_QueueSpriteBlock hand sets busy flag, increments count at 0xaa, bounds-checks size against clip, queues sprite
+0x060ac628 func sgl_BuildSpriteCommand hand fills VDP1 command fields from sprite table entry and clip, bounds computation
+0x060ac6fc func sgl_CheckSpriteDepth hand increments sprite count, compares depth against shifted z limit
+0x060ac73c func sgl_SetSpriteClipOrigin hand clamps args, stores packed origin at 0x304 and address at 0x8c
+0x060ac78c func dmac_StartCh0Auto hand waits DMAC ch0, picks transfer size by address/length alignment, starts DMA
+0x060ac7e6 func cache_Purge hand writes 0x11 to cache control register 0xfffffe92
+0x060ac810 func dmac_WaitCh0 hand spins until DMAC ch0 CHCR transfer-in-progress clears, returns status
+0x060ac820 func list_InitNodePool hand clears list head/tail, builds free-node pointer array of count entries
+0x060ac880 func list_AllocNode hand pops free node from pool, returns null if empty
+0x060ac896 func list_AppendNode hand allocs node, links at tail of doubly linked list, stores data param
+0x060ac924 func list_InsertAfter hand allocs node and links it after param_1 in doubly linked list
+0x060ac958 func list_RunCallbacks hand walks list calling function pointer at node+0xc with node
+0x060ac978 func pool_AllocEntry hand pops entry from free pool array, clears first word, null if empty
+0x060ac998 func vdp1_SetTableAc9e4 hand stores table lookup indexed by param&7 into variable
+0x060aca3c func flag_TestBitReg10 hand returns true when masked bit of word at base+0x10 is clear
+0x060aca48 func flag_SetBitReg10 hand sets masked bit in word at base+0x10, clears it when param is zero
+0x060aca90 func pad_InitEdgeState hand sets three halfwords at +2,+4,+6 to 0xffff
+0x060aca9a func pad_UpdateEdges hand computes press and release edge masks from new and previous state, stores state
+0x060ace12 func pad_InitEdgeStateAdv hand stores byte then inits edge state, returns advanced pointer
+0x060acf60 func smpc_WaitVblankSetup hand waits status bit 2, sets frame counter, queues command 4/0x2c
+0x060acf7a func sgl_FrameSync hand queues command, calls rand, peripheral scan and wait routines, loops via vector at 0x3cc (was smpc_PollPeripherals)
+0x060ad070 func math_RandomStep hand LCG update of seed at GBR+0x33c, returns rounded high half
+0x060ad08e func sgl_KickTransferSlots hand loops eight pad slots, calls FUN_060ad14a for type p, fills per-pad data (was smpc_ScanPads)
+0x060ad0e6 func smpc_WaitCommandDone hand polls SMPC status byte with delay loops, writes DMAC-style value 0x30 delay
+0x060ad14a func sgl_ClearSlotBusyBit hand computes bit position from port index and clears bit in mask at GBR+0xb2 (was smpc_UpdatePadMask)
+0x060ad304 func sgl_SetUserCallback14 hand stores callback pointer at GBR+0x14, default to stub label if null
+0x060ad314 func sgl_SetUserCallback3cc hand stores callback pointer at GBR+0x3cc, default to stub label if null
+0x060ad324 func snd_InitDriver hand sends SMPC command 7 then fills local param block and sets 0x200 (was smpc_IssueCommandSeq)
+0x060ad40c func smpc_SendCommand hand waits SF bit clear, sets SF, writes command byte to COMREG, waits completion
+0x060ad428 func smpc_WaitSf hand spins with delay loop while SF busy, returns 0x30
+0x060ad43e func stub_060ad43e hand empty function returning immediately
+0x060ad490 func scsp_SetMasterVolume hand calls wait helper, writes 0x82 command and nibble value, sets 0x80 trigger (was scsp_WriteVolumeReg)
+0x060ad4be func scsp_WriteCmd86 hand calls wait helper, writes command 0x86 packed with value<<8, trigger 0x80
+0x060ad4c4 func scsp_SelectBank hand calls wait helper, writes command 8 packed with value<<8, trigger 0x80 (was scsp_WriteCmd08)
+0x060ad4f0 func scsp_ClearChannels hand zeroes first halfword of eight 0x14-byte entries, builds channel mask from count
+0x060ad548 func scsp_PlayChannel hand selects channel via FUN_060ad5aa when zero, builds play command word with params
+0x060ad5aa func scsp_FindFreeChannel hand scans four halfwords for value <0x100, returns slot index+3, else priority search
+0x060ad5f8 func scsp_StopChannel hand calls wait helper, writes command 2 with param, trigger 0x80 (was scsp_WriteCmd02)
+0x060ad62c func scsp_SetPlayParams hand waits then fills command block (5) with params and halfword at +0x14
+0x060ad684 func scsp_WriteCmd02Hi hand waits then writes command 2 in high byte, trigger 0x80
+0x060ad6ac func scsp_WriteCmd87 hand waits then command 0x87 with packed two-byte param
+0x060ad6d4 func scsp_SetPanVolume hand waits then command 0x80 with packed args, signed bytes converted to 5-bit fields
+0x060ad730 func scsp_ClearCmd80 hand waits then command 0x80 with zero param
+0x060ad754 func scsp_CopyCmdBlock hand waits then copies 13-byte command block from param_1 into sound command area
+0x060ad780 func sgl_InvertCurrentMatrix hand large routine extracting angles from current matrix with abs compares, MAC math; like slGetRotAngle (was sgl_MatrixToAngles)
+0x060adb44 func vdp2_SetMapAddrNbg2 hand stores address at 0x20c, calls FUN_060adbd6, derives shift/map offset like NBG0
+0x060adbd6 func vdp2_ClearPriorityFields hand clears matching 2-bit fields in GBR+0xce, loops four entries
+0x060adc18 func vdp2_SetMapAddrNbg3 hand stores address at 0x210, same map offset derivation as NBG2
+0x060adcb8 func sgl_InitVdpDisplay hand sets command queue pointers, masks mode param to 5 bits, writes display mode registers
+0x060adf02 func sgl_ClipSpriteRect hand compares rect corners against clip bounds at 0x84/0x90, jump table dispatch for clip cases
+0x060ae29c func dmac_StartCh0Sized hand size-dependent transfer unit select, writes SAR/DAR/TCR, align mask by size
+0x060ae49e func dmac_StartCh1Copy hand waits DMAC ch1 CHCR idle, writes SAR/DAR/TCR at 0xffffff90.., starts transfer DMAOR 9
+0x060ae65c func sgl_SetFrameInterval hand sign flag into 0xb0 bit7, clamps value, stores interval at GBR+0x12
+0x060ae724 func sgl_ProcessTransferSlots hand loops eight entries with switch on peripheral type, dispatches by masked byte (was smpc_SwitchPeripheralReport)
+0x060ae950 func sgl_QueueDmaTransfer hand waits queue slot, fills DMA descriptor with address and length, 7 flag
+0x060ae9a6 func sgl_WaitDmaFlag hand spins with delay loop until bit 2 of byte GBR+0xbd set, returns 0x30
+0x060aeac8 func sgl_InstallVblankHandler hand provisional: clears flag, registers handler via two vector-setup calls with 2,1 and 1,0
+0x060aec18 func mem_Clear512 hand zeroes 512 bytes (64 double-words) at register-passed pointer
+0x060aec2a func gfx_BuildRampTables hand builds three 32x32 clamped 0..31 gradient byte tables and 32-entry short step table
+0x060aeecc func sh2_EnableCache hand writes 0x11 to cache control register 0xfffffe92 enabling cache
+0x060b544c func buf_CopyStridedBytes hand copies 1+7+4+4 bytes with stride 2 from source into work buffer
+0x060b5488 func buf_AppendStridedBytes32 hand appends 32 bytes stride-2 into ring buffer if below limit; updates fill index
+0x060b5aa4 func obj_LinkNodeFromTemplate provisional gbr-based node setup linking into hashed list by high byte, copies fields
+0x060b5f50 func stm_InitWorkArea hand initialises stream library work area: group table 0x3c each, stream table 0x30 each
+0x060b5fd2 func stm_AllocGroup hand finds free group slot (flag at +0x3a), zeroes and initialises fields, returns pointer
+0x060b603c func stm_FindActiveStream hand scans stream table for entry with in-use flag at +0x2d, returns it or 0
+0x060b6062 func stm_GetGroupEndFad hand returns end frame address of group's current file range via range callback
+0x060b60a8 func stm_MapCdErrorToStmError hand maps negative CD error codes to STM error values then sets error
+0x060b60e8 func stm_LinkStreamToGroup hand inserts stream into group list sorted by start FAD, relinks CD sector chain
+0x060b61ea func stm_BuildSubheaderMask hand builds CD subheader filter mask from four fields not equal -1
+0x060b6216 func stm_ConvertSubheaderFilter hand copies six filter bytes from 16-bit entries then builds mask
+0x060b6248 func stm_InitStreamEntry hand fills stream entry from CD partition and range, sets CD filter, links to group
+0x060b63a2 func stm_FreeGroup hand clears group's first fields and in-use flag
+0x060b63ae func stm_UnlinkStreamFromCdChain hand removes stream from CD sector chain, reconnects neighbours, checks CD status
+0x060b6454 func stm_UnlinkStream hand clears stream in-use flag, removes from group list, unlinks CD chain
+0x060b64ac func stm_SelectLargestFadStream hand picks stream with largest end FAD among CD-backed ones into group+0xc
+0x060b64fa func stm_InitWorkAreaChecked hand calls stm_InitWorkArea if third argument nonzero, returns 1
+0x060b6512 func stm_OpenGroup hand sets function id, allocates group, checks CD error, returns group
+0x060b6548 func stm_CloseStreamInGroup hand removes stream from group state, resets CD filter/pointers, fixes group head
+0x060b6728 func stm_CloseGroup hand closes all streams of group, releases CD resource and frees group slot
+0x060b679e func stm_CloseAllGroups hand loops all groups, calls callbacks for streams, closes each group
+0x060b681a func stm_OpenStreamCommon hand allocates stream, gets CD partition, inits entry, optionally seeks and prepares
+0x060b68fc func stm_OpenStreamFromFile hand gets file info then opens stream with 12-byte filter copy
+0x060b6990 func stm_OpenFileStream hand validates args, maps mode 0/1 to flags, opens stream by file id
+0x060b69f6 func stm_OpenRangeStream hand opens stream for explicit FAD/size range, converts size shift 11
+0x060b6ab8 func stm_SetStreamLoopLimit hand clears pending transfer and stores limit value in stream
+0x060b6aea func stm_SetLoopLimitApi hand validated wrapper setting stream limit
+0x060b6b2a func stm_OpenStreamWithLimit hand opens stream with mode 6 then sets limit
+0x060b6b9e func stm_CloseStreamApi hand validated wrapper calling stm_CloseStreamInGroup
+0x060b6c74 func stm_SetFuncId hand stores current function id in stream library state
+0x060b6c7c func stm_SetError hand records error code in library state if none pending
+0x060b6ca4 func stm_CheckCdError hand maps CD fatal codes to STM errors and raises error callback
+0x060b6cea func stm_CallErrorHandler hand invokes user error callback with pending error then clears it
+0x060b6d28 func stm_IsGroupAllStreamsOk hand true if no current stream and every stream error-free
+0x060b6d54 func stm_IsGroupAllStreamsDone hand true if group idle and all streams have done flag
+0x060b6dd6 func stm_MapStatusToError hand maps CD status 3-6 to error codes and reports
+0x060b6fd8 func stm_StartAsyncTask hand sets callback and arg in task slot if idle, starts task
+0x060b7012 func stm_RunAsyncUntilDone hand starts task then loops stepper until it returns done value
+0x060b703c func stm_IsStreamBufferNonEmpty hand tests stream buffer count field nonzero
+0x060b7050 func stm_IsStreamBufferNonEmptyApi hand validated wrapper of buffer-nonempty test
+0x060b70c4 func stm_ResetStreamsBeyondFad hand clears flags of group streams whose start FAD is beyond current
+0x060b710c func stm_ClearStreamPendingAll hand clears pending for each stream in group via helper
+0x060b7138 func stm_ClearStreamFlagsAll hand masks flag bits of every stream and clears pending if active
+0x060b7184 func stm_SeekGroup hand resets group state for seek to stream or start, sets limit counters
+0x060b7224 func stm_SeekGroupApi hand validated wrapper for group seek
+0x060b7278 func stm_MarkStreamsReady hand marks streams at or beyond current FAD ready/flagged
+0x060b72f2 func stm_FinishPassedStreams hand marks streams behind current FAD finished, advances group head
+0x060b738e func stm_FindNextGapFad hand finds next stream start FAD after position or -1 if inside one
+0x060b73ee func stm_GetHeadStreamStartFad hand returns start FAD of group's head stream
+0x060b740c func stm_PlanGroupStep hand decides next group position/seek per status flags and FAD thresholds, returns seek target
+0x060b75d0 func stm_ApplyGroupStep hand seeks CD to target or marks group finished when end reached
+0x060b7638 func stm_UpdateGroup hand per-tick group update: plan step, apply step, handle error callback
+0x060b76cc func stm_GetCurrentReadFad hand returns current CD read position or stream's own position
+0x060b7796 func stm_CheckStreamState hand evaluates stream FAD vs buffer state, returns state code for read decision
+0x060b788a func stm_GetBufferedSize hand returns buffer fill size of stream if nonempty else 0
+0x060b78cc func stm_CallGroupCallback hand calls group end callback once if flag 8 set then clears flag
+0x060b7918 func stm_ScanStreamsForReady hand round-robin scans group streams, updates done flags, picks stream to service
+0x060b7b32 func stm_ResetAllStreamTransfers hand calls transfer-reset helper for every stream in group
+0x060b7b54 func stm_ServiceGroup hand services group: scan streams until progress, record state, handle completion
+0x060b7bf6 func stm_ExecServer hand main stream server tick: runs callback or services current group with reentry guard
+0x060b7d2c func stm_ReseekGroup hand validates handle then re-syncs group position and streams after seek request
+0x060b7e1e func stm_FlushCurrentGroup hand calls flush on current group's stream and returns first error
+0x060b7e42 func stm_IsStreamReadable hand validated check whether stream state code indicates data available
+0x060b7eb8 func stm_GetStreamBufferedSizeApi hand validated wrapper returning buffered size with reentry guard
+0x060b7fa0 func stm_CallUserCallback hand invokes callback at +0x18 with its context argument
+0x060b7fbc func stm_SetTransferCallback hand enables/disables transfer callback and buffer mode for stream
+0x060b80dc func stm_SetTransferSize hand sets stream transfer unit, doubling when mode 2
+0x060b812a func stm_SetTransferSizeApi hand validated wrapper checking size and mode values
+0x060b81a6 func stm_RestartTransfer hand reinitialises stream transfer buffer and restarts with saved params
+0x060b8214 func stm_RestartTransferApi hand validated wrapper of transfer restart
+0x060b829e func stm_IsTransferIdle hand returns 1 when transfer buffer function reports zero
+0x060b82c4 func stm_IsTransferIdleApi hand validated wrapper of transfer-idle check
+0x060b837e func stm_GetNthStream hand returns nth stream in group list or 0
+0x060b83ea func stm_SetGroupCallbackParams hand stores group callback, count and args after validation
+0x060b8464 func stm_GetStreamFilterInfo hand returns stream range and CD subheader filter fields, 0xffff for unused
+0x060b8588 func stm_SetStreamPartition hand assigns stream CD partition from other stream or default and applies filter
+0x060b8604 func stm_CopyStreamFilter hand validated copy of CD filter ranges between two streams
+0x060b86b6 func stm_ResetStreamRange hand validated reset of stream transfer and CD range
+0x060b8788 func stm_GetSectorWords hand validated size query returning byte size shifted right by one
+0x060b8800 func stm_FindSectorIndexForSize hand finds sector count reaching given size for CD or memory stream
+0x060b8902 func stm_SetStreamLink hand links stream to another in-use stream after validation, else fails
+0x060b8974 func stm_ResetStreamLink hand validated reset of stream link to itself
+0x060b89bc func stm_SetBufferMode hand validated selecting one of two buffer mode functions
+0x060b8a0e func stm_SetBufferParams hand validated setting of buffer parameters with nonneg size
+0x060b8a60 func stm_SetBufferType hand validated setting buffer type 0-3 with params
+0x060b8b86 func stm_GetStreamStatusApi hand validated getter returning status field at +0x30
+0x060b8bce func stm_GetCurrentFadApi hand validated getter of current FAD, syncs from CD position when active
+0x060b8c84 func stm_SetErrorCallback hand clears error and stores error callback and argument
+0x060b8cb4 func cd_CallWithIrqMask hand calls handler with interrupts masked, sets status 3 on failure
+0x060b8cf4 func sys_EnterCritical hand increments nesting count, first level saves vectors; returns SR mask
+0x060b8d26 func sys_LeaveCritical hand decrements nesting, last level restores vectors, returns new SR bits
+0x060b8d56 func sys_SaveAndSetVectors hand saves two vector entries and replaces them with stub handler
+0x060b8d6e func sys_RestoreVectors hand restores two saved vector entries
+0x060b8d84 func cd_CheckReady hand queries CDC function 2 status, returns 0 if ready else 1
+0x060b8da8 func cd_CallFn1 hand masked call of CD jump-table entry +4 with sign-extended arg
+0x060b8e22 func cd_CallFn3 hand masked call of CD jump-table entry +0xc with three args
+0x060b8e54 func cd_CallFn4 hand masked call of CD jump-table entry +0x10 with four args
+0x060b8e8a func cd_CallFn5 hand masked call of CD jump-table entry +0x14 with three args
+0x060b8ebc func cd_CallFn6 hand masked call of CD jump-table entry +0x18 with two args
+0x060b8eea func cd_CallFn7 hand masked call of CD jump-table entry +0x1c with four args
+0x060b8f24 func cd_CallFn8 hand masked call of CD jump-table entry +0x20 with three args
+0x060b8f56 func cd_GetTocEntry hand calls table entry +0x24 then normalises 12/32 entry into 1/1/1 form
+0x060b8f88 func cd_CallFn10 hand tail call of CD jump-table entry +0x28
+0x060b8fa0 func cd_WaitStatus hand polls status function until it returns zero, returns result
+0x060b8fc0 func cd_GetFadRange hand gets partition start FAD and size, computes end FAD or error value
+0x060b9010 func cd_SetupReadRange hand builds CD read command for FAD range up to partition end, records range
+0x060b9092 func cd_StopRead hand issues CD command 3, clears recorded FAD range
+0x060b90f4 func cd_SendCommand3b hand issues CD command with fields 3 and mode byte, returns error flag
+0x060b9136 func cd_SeekFad hand issues CD seek command to FAD, records current FAD
+0x060b918e func cd_SetReadEnd hand issues CD command with FAD range to end FAD, records end FAD
+0x060b9278 func cd_ReadSectorWords hand reads one sector size from block, returns size shifted right by one
+0x060b92ac func cd_ClampedRequest hand clamps request length to partition size and calls request function
+0x060b92f2 func cd_WaitBufferResult hand polls buffer function until zero, returns result value
+0x060b9316 func cd_WaitStatusTriple hand polls function with three out args until zero, returns last value
+0x060b933c func cd_WaitHirqBit4 hand sets mask 0xfffffffb then polls HIRQ until bit 4 set or timeout
